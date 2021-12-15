@@ -1,0 +1,69 @@
+.d-flex {
+    display: flex;
+}
+.justify-content-center {
+    justify-content: center;
+    align-items: center;
+}
+.container .row {
+    height: 80vh;
+    overflow: hidden;
+}
+
+body {
+    overflow: hidden;
+}
+
+footer img {
+    width: 130px;
+}
+
+footer div.col-lg-4 {
+    text-align: right;
+    position: relative;
+    padding-bottom: 10px;
+    border-bottom: 1px solid grey;
+}
+#avis_ticket {
+    background: #ecf0c0;
+    padding: 4px 10px;
+}
+
+/* ---------------------------------------------------
+    LOGIN STYLE
+----------------------------------------------------- */
+
+#container{
+    width:30%;
+    margin:0 auto;
+    margin-top:9%;
+}
+
+#login_form {
+    width:100%;
+    padding: 30px;
+    border: 1px solid #f1f1f1;
+    background: #fff;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+#login_form input[type=submit] {
+    padding: 14px 20px;
+    margin: 8px 0;
+    width: 100%;
+    background: rgb(116, 184, 159);
+}
+
+.d-flex {
+    display: flex;
+    justify-content: center;
+}
+
