@@ -10,14 +10,11 @@ class Tickets extends MX_Controller {
 	}
 
 	public function index(){
-		$id_ticket = isset($_GET["id"]) ? htmlspecialchars($_GET["id"]) : NULL ;
-		$ticket_title = isset($_GET["title"]) ? htmlspecialchars($_GET["title"]) : NULL ;
 		$client_name = isset($_GET["client"]) ? htmlspecialchars($_GET["client"]) : NULL ;
-		$ticket_type = isset($_GET["type"]) ? htmlspecialchars($_GET["type"]) : NULL ;
-		$issue_type = isset($_GET["issuetype"]) ? htmlspecialchars($_GET["issuetype"]) : NULL ;
-		$issue_subtype = isset($_GET["issuesubtype"]) ? htmlspecialchars($_GET["issuesubtype"]) : NULL ;
-		$value = isset($_GET["value"]) ? htmlspecialchars($_GET["value"]) : NULL;
-
+		if($client_name != NULL) {
+			$this->tickets_model->insert_client($client_name);
+		}
+		$client_flag = $this->tickets_model->get_client_by_name($client_name);
 		$data= array(
 			'id_ticket' => isset($_GET["id"]) ? htmlspecialchars($_GET["id"]) : NULL,
 			'ticket_title' => isset($_GET["title"]) ? htmlspecialchars($_GET["title"]) : NULL,

@@ -3,7 +3,7 @@
         <div class="col-lg-10">
             <div class="row">
                 <div class="col-lg-4">
-                    <h2>Rapport feedback</h2>
+                    <h2>Retour client</h2>
                 </div>
                 <div class="col-lg-4"><br>
                     <div class="form-group">

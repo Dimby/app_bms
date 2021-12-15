@@ -6,6 +6,7 @@ class Tickets_model extends CI_Model
 	{
 		parent::__construct();
 		$this->feedback = "feedback";
+		$this->client = "client";
 	}
 
 	public function get_ticket($id) {
@@ -24,6 +25,16 @@ class Tickets_model extends CI_Model
 	public function update_ticket_by_id($id, $data) {
 		$this->db->where('id_ticket', $id);
 		$this->db->update($this->feedback, $data);
+	}
+
+	public function insert_client($data) {
+		$this->db->where('nom', $data);
+		$this->db->select('client_flag');
+		$this->db->from($this->client);
+		$query = $this->db->get();
+		if($query->num_rows() == 0) {
+			$this->db->insert($this->client, array(''));
+		}
 	}
 		
 }
