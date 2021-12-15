@@ -1,14 +1,31 @@
 
-    <div class="row" style="padding: 10px; display: flex; justify-content: center">
+    <div class="row d-flex" style="padding: 10px;">
         <div class="col-lg-10">
-            <h3>Rapport feedback</h3>
-            <button class="btn btn-primary" id="logout_button" style="float: right">Deconnecter</button>
-            <button class="btn btn-info" id="import_button" style="float: right; margin-right: 20px">Exporter en PDF</button>
+            <div class="row">
+                <div class="col-lg-4">
+                    <h2>Rapport feedback</h2>
+                </div>
+                <div class="col-lg-4"><br>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Filtrer par client</label>
+                        <select class="form-control" id="exampleFormControlSelect1">
+                            <option>Iris</option>
+                            <option>Bethesda</option>
+                            <option>Newpack</option>
+                            <option>Smarteo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4" style="text-align: right"><br>
+                    <button class="btn btn-info" id="import_button" style="margin-right: 20px">Exporter en PDF</button>
+                    <button class="btn btn-primary" id="logout_button">Deconnecter</button>
+                </div>
+            </div>
         </div>
         <!-- <div class="col-lg-6" style="border: 1px solid red">
         </div> -->
     </div>
-    <div class="row" style="display: flex; justify-content: center">
+    <div class="row d-flex">
         <div class="col-lg-10">
             <table id="tickets_datatable" class="table table-striped table-bordered dataTable no-footer" role="grid" aria-describedby="datatable_info">
                 <thead>
@@ -91,14 +108,22 @@
         ],
         "language": {
             "emptyTable": "Aucun Résultat",
-            "infoEmpty": "Aucun résultat",
+            "infoEmpty": "Aucun enregistrement disponible",
             "zeroRecords": "Aucun Résultat",
-            "info": "_START_ à _END_ sur _TOTAL_ entrées",
-            "search": "Rechercher :",
-            "infoFiltered": "",
+            "infoFiltered": "(filtré à partir du total : _MAX_ entrée(s))",
+            "lengthMenu": "Afficher : _MENU_",
+            "info": "Page _PAGE_ sur _PAGES_",
+            'search': "Recherche : ",
+            "paginate": {
+                "first":      "Premier",
+                "last":       "Dernier",
+                "next":       "Suivant",
+                "previous":   "Précedent"
+            },
         },
-        "dom": 'fBrtip',
+        "dom": "<'row w-100 m-0 p-2'<'col-lg-4 text-left'l><'col-lg-4 text-center'p><'col-lg-4 text-right'f>>",
         "bFilter": true,
+        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Tous']],
         "responsive": true,
     });
     //!LIST All User
