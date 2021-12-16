@@ -36,7 +36,11 @@ class Admin extends MX_Controller {
 	}
 
 	public function list_tickets() {
-		$tickets = $this->admin_model->get_all_tickets();
+		if($this->input->post('client') != '') {
+			$tickets = $this->admin_model->get_tickets_by_client($this->input->post('client'));
+		} else {
+			$tickets = $this->admin_model->get_all_tickets();
+		}
 		$data['data'] = $tickets;
 		$this->output
                 ->set_status_header(200)
@@ -60,6 +64,10 @@ class Admin extends MX_Controller {
 		} else {
 			$this->security->login();
 		}
+	}
+
+	public function set_session_client() {
+		$this->session->set_userdata('client', array('client' => $this->input->post('client')));
 	}
 
 }
