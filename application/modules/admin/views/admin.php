@@ -251,7 +251,24 @@
             "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Tous']],
             "responsive": true,
             "buttons": [
-                'pdf', 'csv'
+                {
+                    extend: 'pdf',
+                    text: 'Exporté : en PDF',
+                    exportOptions: {
+                        modifier: {
+                            page: 'current'
+                        }
+                    }
+                },
+                {
+                    extend: 'csv',
+                    text: 'en CSV',
+                    exportOptions: {
+                        modifier: {
+                            search: 'none'
+                        }
+                    }
+                }
             ]
         });
         //!LIST All User
