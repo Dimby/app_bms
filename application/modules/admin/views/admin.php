@@ -25,7 +25,7 @@
                 </div>
             </div>
             <div class="col-lg-4" style="text-align: right"><br>
-                <button class="btn btn-primary" id="logout_button">Deconnecter</button>
+                <button class="btn btn-primary" id="logout_button" data-toggle="modal" data-target="#logout_modal">Deconnecter</button>
             </div>
         </div>
     </div>
@@ -145,6 +145,22 @@
   </div>
 </div>
 
+<!-- Modal Deconnecter -->
+<div class="modal fade" id="logout_modal" tabindex="-1" role="dialog" aria-labelledby="delete">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="delete">Déconnecter</h4>
+      </div>
+      <div class="modal-body text-center">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+        <button type="button" id="logout_confirm" class="btn btn-primary">Oui</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 
     let action_feedback = function(id) {
@@ -159,7 +175,7 @@
         location.reload()
     })
 
-    $('#logout_button').on('click', function() {
+    $('#logout_confirm').on('click', function() {
         $.ajax({
             url: "<?= site_url('admin/logout') ?>",
             method: 'POST',
@@ -235,7 +251,24 @@
             "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Tous']],
             "responsive": true,
             "buttons": [
-                'pdf', 'csv'
+                {
+                    extend: 'pdf',
+                    text: 'Exporté : en PDF',
+                    exportOptions: {
+                        modifier: {
+                            page: 'current'
+                        }
+                    }
+                },
+                {
+                    extend: 'csv',
+                    text: 'en CSV',
+                    exportOptions: {
+                        modifier: {
+                            search: 'none'
+                        }
+                    }
+                }
             ]
         });
         //!LIST All User
