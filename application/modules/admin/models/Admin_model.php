@@ -29,5 +29,13 @@ class Admin_Model extends CI_Model
 		$this->db->where('id_ticket', $id);
 		$this->db->delete($this->feedback);
 	}
+
+	public function get_tickets_by_client($client) {
+		$this->db->where('client_name', $client);
+		$this->db->select('*');
+		$this->db->from($this->feedback);
+		$query = $this->db->get();
+        return $query->result(); // Ligne 1
+	}
 		
 }
