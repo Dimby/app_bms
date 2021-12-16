@@ -7,12 +7,14 @@ class Admin extends MX_Controller {
 		parent::__construct();
 		$this->load->model('Admin_model', 'admin_model');
 		$this->load->module('security/security');
+		$this->load->model('tickets/Tickets_model', 'tickets_model');
 	}
 	
 	public function index()
 	{
 		// NULL : Variable (type array)
-		$content = $this->load->view('admin', NULL, TRUE);
+		$clients = $this->tickets_model->get_all_client();
+		$content = $this->load->view('admin', array('clients' => $clients), TRUE);
 		$this->display($content);
 	}
 
@@ -45,6 +47,11 @@ class Admin extends MX_Controller {
 	public function logout() {
 		$this->session->sess_destroy();
         redirect('/');
+	}
+
+	public function delete_ticket() {
+		var_dump($this->input->post('id_ticket'));
+		$this->admin_model->delete_ticket($this->input->post('id_ticket'));
 	}
 
 	public function _remap($method) {

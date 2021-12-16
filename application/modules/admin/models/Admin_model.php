@@ -24,5 +24,10 @@ class Admin_Model extends CI_Model
 		$query = $this->db->get();
         return $query->result(); // Ligne 1
 	}
+
+	public function delete_ticket($id) {
+		$this->db->where('id_ticket', $id);
+		$this->db->delete($this->feedback);
+	}
 		
 }

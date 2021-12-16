@@ -18,7 +18,7 @@ class Tickets extends MX_Controller {
 		$data= array(
 			'id_ticket' => isset($_GET["id"]) ? htmlspecialchars($_GET["id"]) : NULL,
 			'ticket_title' => isset($_GET["title"]) ? htmlspecialchars($_GET["title"]) : NULL,
-			'client_name' => isset($_GET["client"]) ? htmlspecialchars($_GET["client"]) : NULL,
+			'client_name' => isset($_GET["client"]) ? $client_flag->nom : NULL,
 			'ticket_type' => isset($_GET["type"]) ? htmlspecialchars($_GET["type"]) : NULL,
 			'issue_type' => isset($_GET["issuetype"]) ? htmlspecialchars($_GET["issuetype"]) : NULL,
 			'issue_subtype' => isset($_GET["issuesubtype"]) ? htmlspecialchars($_GET["issuesubtype"]) : NULL,
