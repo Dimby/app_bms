@@ -50,8 +50,41 @@
                 </tr>
             </thead>
         </table>
+        <hr>
+        <div class="">
+            <div class="d-flex">
+                <div class="item-backup">
+                    <div class="icon">1</div>
+                    <div class="text">Pas du tout satisfait</div>
+                    <div class="count"><?= $backups[0] < 10 ? '0'.$backups[0] : $backups[0] ?></div>
+                </div>
+                <div class="item-backup">
+                    <div class="icon">2</div>
+                    <div class="text">Peu satisfait</div>
+                    <div class="count"><?= $backups[1] < 10 ? '0'.$backups[1] : $backups[1] ?></div>
+                </div>
+                <div class="item-backup">
+                    <div class="icon">3</div>
+                    <div class="text">Satisfait</div>
+                    <div class="count"><?= $backups[2] < 10 ? '0'.$backups[2] : $backups[2] ?></div>
+                </div>
+                <div class="item-backup">
+                    <div class="icon">4</div>
+                    <div class="text">Très satisfait</div>
+                    <div class="count"><?= $backups[3] < 10 ? '0'.$backups[3] : $backups[3] ?></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="">
+            <div class="" style="width: 100%; padding-bottom: 50px">
+                <canvas id="myChart" width="100%"></canvas>
+            </div>
+        </div>
     </div>
 </div>
+<br><br><br>
+<br><br>
 
 <!-- Modal -->
 <div class="modal fade" id="edit_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -299,4 +332,58 @@
             }
         })
     })
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'],
+        datasets: [{
+            label: 'Pas du tou satisfait',
+            data: [12, 19, 3, 5, 2, 3],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+            ],
+            borderWidth: 2
+        },
+        {
+            label: 'Peu satisfait',
+            data: [6, 8, 1, 15, 3, 9],
+            borderColor: [
+                'green',
+            ],
+            borderWidth: 2
+        },
+        {
+            label: 'Satisfait',
+            data: [1, 10, 5, 12, 2, 4],
+            borderColor: [
+                'yellow',
+            ],
+            borderWidth: 2
+        },
+        {
+            label: 'Très satisfait',
+            data: [4, 17, 7, 2, 5, 10],
+            borderColor: [
+                'purple',
+            ],
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
 </script>

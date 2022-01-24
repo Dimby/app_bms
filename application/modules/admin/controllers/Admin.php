@@ -14,7 +14,8 @@ class Admin extends MX_Controller {
 	{
 		// NULL : Variable (type array)
 		$clients = $this->tickets_model->get_all_client();
-		$content = $this->load->view('admin', array('clients' => $clients), TRUE);
+		$backups = $this->admin_model->get_count_backups();
+		$content = $this->load->view('admin', array('clients' => $clients, 'backups' => $backups), TRUE);
 		$this->display($content);
 	}
 
@@ -54,7 +55,7 @@ class Admin extends MX_Controller {
 	}
 
 	public function delete_ticket() {
-		var_dump($this->input->post('id_ticket'));
+		// var_dump($this->input->post('id_ticket'));
 		$this->admin_model->delete_ticket($this->input->post('id_ticket'));
 	}
 

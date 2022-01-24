@@ -19,6 +19,9 @@
     <script src="<?php echo base_url('assets/datatable/js/buttons/buttons.print.js'); ?>"  ></script>
     <script src="<?php echo base_url('assets/datatable/js/buttons/buttons.flash.js'); ?>"  ></script>
     <script src="<?php echo base_url('assets/datatable/js/buttons/buttons.bootstrap.js'); ?>"  ></script>
+
+    <!-- Chart JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js" integrity="sha512-TW5s0IT/IppJtu76UbysrBH9Hy/5X41OTAbQuffZFU6lQ1rdcLHzpU5BzVvr/YFykoiMYZVWlr/PX1mDcfM9Qg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         footer {
             position: absolute;
