@@ -1,13 +1,18 @@
 
 <?php 
     $client = $this->session->userdata('client') != NULL ? $this->session->userdata('client')['client'] : '';
+
+    function percentage($votes, $val) {
+        return round(($val*100)/$votes, 2);
+    }
+
 ?>
 
 <div class="row d-flex" style="padding: 10px;">
     <div class="col-lg-10">
         <div class="row">
             <div class="col-lg-4">
-                <h2>Retour client</h2>
+                <h2>Retour client - 2022</h2>
             </div>
             <div class="col-lg-4"><br>
                 <div class="form-group">
@@ -51,34 +56,101 @@
             </thead>
         </table>
         <hr>
-        <div class="">
-            <div class="d-flex">
-                <div class="item-backup">
-                    <div class="icon">1</div>
-                    <div class="text">Pas du tout satisfait</div>
-                    <div class="count"><?= $backups[0] < 10 ? '0'.$backups[0] : $backups[0] ?></div>
-                </div>
-                <div class="item-backup">
-                    <div class="icon">2</div>
-                    <div class="text">Peu satisfait</div>
-                    <div class="count"><?= $backups[1] < 10 ? '0'.$backups[1] : $backups[1] ?></div>
-                </div>
-                <div class="item-backup">
-                    <div class="icon">3</div>
-                    <div class="text">Satisfait</div>
-                    <div class="count"><?= $backups[2] < 10 ? '0'.$backups[2] : $backups[2] ?></div>
-                </div>
-                <div class="item-backup">
-                    <div class="icon">4</div>
-                    <div class="text">Très satisfait</div>
-                    <div class="count"><?= $backups[3] < 10 ? '0'.$backups[3] : $backups[3] ?></div>
-                </div>
+        <div class="row">
+            <div class="col-lg-3" style="padding-right: 50px">
+                <h2>Filtre</h2>
+                <form action="">
+                <hr>
+                    <div class="form-group">
+                        <label for="mounth">Par mois</label>
+                        <select class="form-control chosen-select" multiple id="mounth">
+                            <option value="0">Janvier</option>
+                            <option value="1">Fevrier</option>
+                            <option value="2">Mars</option>
+                            <option value="3">Avril</option>
+                            <option value="4">Mai</option>
+                            <option value="5">Juin</option>
+                            <option value="6">Juillet</option>
+                            <option value="7">Août</option>
+                            <option value="8">Septembre</option>
+                            <option value="9">Octobre</option>
+                            <option value="10">Novembre</option>
+                            <option value="11">Décembre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="mounth">Par client</label>
+                        <select class="form-control chosen-select" multiple id="customer">
+                            <?php
+                                foreach($clients as $item) {
+                                    ?>
+                                        <option value="<?= $item->nom ?>"><?= $item->nom ?></option>
+                                    <?php
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="mounth">Par valeur</label>
+                        <select class="form-control chosen-select" multiple id="valeur">
+                            <option value="">Pas du tout satisfait</option>
+                            <option value="">Peu satisfait</option>
+                            <option value="">Satisfait</option>
+                            <option value="">Très satisfait</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-primary">Valider</button>
+                </form>
             </div>
-        </div>
-        <hr>
-        <div class="">
-            <div class="" style="width: 100%; padding-bottom: 50px">
-                <canvas id="myChart" width="100%"></canvas>
+            <div class="col-lg-9">
+                <div class="alert alert-info" role="alert">
+                    <strong>Résultats filtré(s) :</strong> <span>Toutes les données</span>
+                </div>
+                <div class="alert alert-info" role="alert">
+                    <strong>Résultats filtré(s) :</strong> 
+                    De <span class="filter_date">04 Janvier à 12 Avril</span> -
+                    Pour <span class="filter_customer">Aveolys, Iris</span> -
+                    <span>[Pas du tout Satisfait, Satisfait]</span>
+                </div>
+                <div>
+                    <h3>Liste [ <?= array_sum($backups) ?> vote(s) ]</h3>
+                    <div class="d-flex" style="justify-content: start">
+                        <div class="item-backup">
+                            <div class="icon">1</div>
+                            <div class="text">Pas du tout satisfait</div>
+                            <div class="count" style="color: #FF6384"><?= $backups[0] < 10 ? '0'.$backups[0] : $backups[0] ?></div>
+                            <div class="percentage"><?= percentage(array_sum($backups), $backups[0]) ?>%</div>
+                        </div>
+                        <div class="item-backup">
+                            <div class="icon">2</div>
+                            <div class="text">Peu satisfait</div>
+                            <div class="count" style="color: #FFB468"><?= $backups[1] < 10 ? '0'.$backups[1] : $backups[1] ?></div>
+                            <div class="percentage"><?= percentage(array_sum($backups), $backups[1]) ?>%</div>
+                        </div>
+                        <div class="item-backup">
+                            <div class="icon">3</div>
+                            <div class="text">Satisfait</div>
+                            <div class="count" style="color: #059BFF"><?= $backups[2] < 10 ? '0'.$backups[2] : $backups[2] ?></div>
+                            <div class="percentage"><?= percentage(array_sum($backups), $backups[2]) ?>%</div>
+                        </div>
+                        <div class="item-backup">
+                            <div class="icon">4</div>
+                            <div class="text">Très satisfait</div>
+                            <div class="count" style="color: #00D9D9"><?= $backups[3] < 10 ? '0'.$backups[3] : $backups[3] ?></div>
+                            <div class="percentage"><?= percentage(array_sum($backups), $backups[3]) ?>%</div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <h3>Courbe</h3>
+                    <canvas id="myChart_line" width="100%"></canvas>
+                </div>
+                <div class="row">
+                    <h3>Bâton</h3>
+                    <canvas id="myChart_bar" width="100%"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -195,6 +267,18 @@
 </div>
 
 <script>
+
+    var config = {
+        '.chosen-select'           : {},
+        '.chosen-select-deselect'  : { allow_single_deselect: true },
+        '.chosen-select-no-single' : { disable_search_threshold: 10 },
+        '.chosen-select-no-results': { no_results_text: 'Oops, Aucun résultat!' },
+        '.chosen-select-rtl'       : { rtl: true },
+        '.chosen-select-width'     : { width: '95%' }
+    }
+    for (var selector in config) {
+        $(selector).chosen(config[selector]);
+    }
 
     let action_feedback = function(id) {
         return `
@@ -333,57 +417,122 @@
         })
     })
 
-    const ctx = document.getElementById('myChart').getContext('2d');
-    const myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'],
-        datasets: [{
-            label: 'Pas du tou satisfait',
-            data: [12, 19, 3, 5, 2, 3],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-            ],
-            borderWidth: 2
+    const ctx_line = document.getElementById('myChart_line').getContext('2d');
+    const ctx_bar = document.getElementById('myChart_bar').getContext('2d');
+    const myChart_line = new Chart(ctx_line, {
+        type: 'line',
+        data: {
+            labels: ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'],
+            datasets: [{
+                label: 'Pas du tou satisfait',
+                data: [0, 1],
+                borderColor: [
+                    '#FF6384',
+                ],
+                backgroundColor: [
+                    '#FF6384',
+                ],
+                borderWidth: 2
+            },
+            {
+                label: 'Peu satisfait',
+                data: [0, 3],
+                borderColor: [
+                    '#FFC890',
+                ],
+                backgroundColor: [
+                    '#FFC890',
+                ],
+                borderWidth: 2
+            },
+            {
+                label: 'Satisfait',
+                data: [0, 0],
+                borderColor: [
+                    '#059BFF',
+                ],
+                backgroundColor: [
+                    '#059BFF',
+                ],
+                borderWidth: 2
+            },
+            {
+                label: 'Très satisfait',
+                data: [0, 2],
+                borderColor: [
+                    '#22CFCF',
+                ],
+                backgroundColor: [
+                    '#22CFCF',
+                ],
+                borderWidth: 2
+            }]
         },
-        {
-            label: 'Peu satisfait',
-            data: [6, 8, 1, 15, 3, 9],
-            borderColor: [
-                'green',
-            ],
-            borderWidth: 2
-        },
-        {
-            label: 'Satisfait',
-            data: [1, 10, 5, 12, 2, 4],
-            borderColor: [
-                'yellow',
-            ],
-            borderWidth: 2
-        },
-        {
-            label: 'Très satisfait',
-            data: [4, 17, 7, 2, 5, 10],
-            borderColor: [
-                'purple',
-            ],
-            borderWidth: 2
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        },
-        plugins: {
-            legend: {
-                position: 'bottom'
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
             }
         }
-    }
-});
+    });
+
+    const myChart_bar = new Chart(ctx_bar, {
+        type: 'bar',
+        data: {
+            labels: ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'],
+            datasets: [{
+                label: 'Pas du tou satisfait',
+                data: [1],
+                backgroundColor: [
+                    '#FF6384',
+                ],
+                borderWidth: 2
+            },
+            {
+                label: 'Peu satisfait',
+                data: [3],
+                backgroundColor: [
+                    '#FFC890',
+                ],
+                borderWidth: 2
+            },
+            {
+                label: 'Satisfait',
+                data: [0],
+                backgroundColor: [
+                    '#059BFF',
+                ],
+                borderWidth: 2
+            },
+            {
+                label: 'Très satisfait',
+                data: [2],
+                backgroundColor: [
+                    '#22CFCF',
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
 
 </script>

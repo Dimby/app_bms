@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<?= base_url()."assets/bootstrap/css/bootstrap.css" ?>">
     <link rel="stylesheet" href="<?= base_url()."assets/bootstrap/css/style.css" ?>">
+    <link rel="stylesheet" href="<?= base_url()."/assets/chosen/chosen.css" ?>">
     <title>Tickets BMS</title>
     <script src="<?= base_url()."assets/jquery/js/jquery-2.2.4.min.js" ?>"></script>
     <script src="<?= base_url()."assets/bootstrap/js/bootstrap.js" ?>"></script>
@@ -19,6 +20,9 @@
     <script src="<?php echo base_url('assets/datatable/js/buttons/buttons.print.js'); ?>"  ></script>
     <script src="<?php echo base_url('assets/datatable/js/buttons/buttons.flash.js'); ?>"  ></script>
     <script src="<?php echo base_url('assets/datatable/js/buttons/buttons.bootstrap.js'); ?>"  ></script>
+
+    <!-- Chosen.js -->
+    <script src="<?php echo base_url('assets/chosen/chosen.jquery.js'); ?>"></script>
 
     <!-- Chart JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js" integrity="sha512-TW5s0IT/IppJtu76UbysrBH9Hy/5X41OTAbQuffZFU6lQ1rdcLHzpU5BzVvr/YFykoiMYZVWlr/PX1mDcfM9Qg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
