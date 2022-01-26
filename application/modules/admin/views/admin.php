@@ -101,7 +101,7 @@
                         <select class="form-control chosen-select" multiple id="valeur">
                             <option value="">Pas du tout satisfait</option>
                             <option value="">Peu satisfait</option>
-                            <option value="">Satisfait</option>
+                            <option value="">Plutôt satisfait</option>
                             <option value="">Très satisfait</option>
                         </select>
                     </div>
@@ -120,6 +120,22 @@
                     <span>[Pas du tout Satisfait, Satisfait]</span>
                 </div>
                 <div>
+                    <h3>Tickets par clients [ <?= count($clients) ?> client(s) ]</h3>
+                    <div class="d-flex" style="justify-content: start">
+                        <?php
+                            foreach($all_tickets_by_clients as $key => $item) {
+                                ?>
+                                <div class="item-backup">
+                                    <div class="count" style="color: grey"><?= $backups[0] < 10 ? '0'.$item : $item ?></div>
+                                    <div class="percentage"><?= $key ?></div>
+                                </div>
+                                <?php
+                            }
+                        ?>
+                    </div>
+                </div>
+                <br>
+                <div>
                     <h3>Liste [ <?= $sum ?> vote(s) ]</h3>
                     <div class="d-flex" style="justify-content: start">
                         <div class="item-backup">
@@ -136,7 +152,7 @@
                         </div>
                         <div class="item-backup">
                             <div class="icon">3</div>
-                            <div class="text">Satisfait</div>
+                            <div class="text">Plutôt satisfait</div>
                             <div class="count" style="color: #059BFF"><?= $backups[2] < 10 ? '0'.$backups[2] : $backups[2] ?></div>
                             <div class="percentage"><?= percentage(array_sum($backups), $backups[2]) ?>%</div>
                         </div>
@@ -424,7 +440,7 @@
     })
 
     let colors = ['#FF6384', '#FFC890', '#059BFF', '#22CFCF'];
-    let labels = ['Pas du tout satisfait', 'Peu satisfait', 'Satisfait', 'Très satisfait'];
+    let labels = ['Pas du tout satisfait', 'Peu satisfait', 'Plutôt satisfait', 'Très satisfait'];
     let mounths = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
     let datasets = [];
     let count = 0;

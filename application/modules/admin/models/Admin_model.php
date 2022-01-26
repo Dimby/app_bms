@@ -55,5 +55,16 @@ class Admin_Model extends CI_Model
 		$query = $this->db->get();
         return $query->row();
 	}
+
+	public function get_all_tickets_by_clients($clients) {
+		foreach($clients as $item) {
+			$this->db->where('client_name', $item->nom);
+			$this->db->select('*');
+			$this->db->from($this->feedback);
+			$query = $this->db->get();
+			$temp[$item->nom] = $query->num_rows();
+		}
+		return $temp;
+	}
 		
 }
