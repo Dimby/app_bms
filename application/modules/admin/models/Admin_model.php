@@ -6,6 +6,7 @@ class Admin_Model extends CI_Model
 	{
 		parent::__construct();
 		$this->feedback = "feedback";
+		$this->cron = "cron";
 	}
 
 	// Recuperer un seul utilisateur
@@ -39,17 +40,20 @@ class Admin_Model extends CI_Model
 	}
 
 	public function get_count_backups() {
-		$backups = array();
-		$this->db->where('valeur', 0);
-		$value_1 = $this->db->get($this->feedback);
-		$this->db->where('valeur', 1);
-		$value_2 = $this->db->get($this->feedback);
-		$this->db->where('valeur', 2);
-		$value_3 = $this->db->get($this->feedback);
-		$this->db->where('valeur', 3);
-		$value_4 = $this->db->get($this->feedback);
-		$backups = array($value_1->num_rows(), $value_2->num_rows(), $value_3->num_rows(), $value_4->num_rows());
-        return $backups;
+		$this->db->select('*');
+		$this->db->from($this->cron);
+		$this->db->order_by('id_cron', 'ASC');
+		$query = $this->db->get();
+        return $query->result();
+	}
+
+	public function get_last_value() {
+		$this->db->select('last_value');
+		$this->db->from($this->cron);
+		$this->db->order_by('id_cron', 'DESC');
+		$this->db->limit(1);
+		$query = $this->db->get();
+        return $query->row();
 	}
 		
 }

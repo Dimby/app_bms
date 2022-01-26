@@ -1,10 +1,16 @@
 
 <?php 
+
     $client = $this->session->userdata('client') != NULL ? $this->session->userdata('client')['client'] : '';
 
     function percentage($votes, $val) {
         return round(($val*100)/$votes, 2);
     }
+
+    // Somme de tout les tickets
+    $sum = array_sum(explode(';', $last_value));
+    // Pour le total
+    $backups = explode(";", $last_value);
 
 ?>
 
@@ -114,7 +120,7 @@
                     <span>[Pas du tout Satisfait, Satisfait]</span>
                 </div>
                 <div>
-                    <h3>Liste [ <?= array_sum($backups) ?> vote(s) ]</h3>
+                    <h3>Liste [ <?= $sum ?> vote(s) ]</h3>
                     <div class="d-flex" style="justify-content: start">
                         <div class="item-backup">
                             <div class="icon">1</div>
@@ -417,56 +423,33 @@
         })
     })
 
+    let colors = ['#FF6384', '#FFC890', '#059BFF', '#22CFCF'];
+    let labels = ['Pas du tout satisfait', 'Peu satisfait', 'Satisfait', 'Très satisfait'];
+    let mounths = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
+    let datasets = [];
+    let count = 0;
+    <?php
+        foreach($data_chart as $item) {
+            ?>
+            datasets.push({
+                label: labels[count],
+                data: [<?= implode(", ", $item) ?>],
+                borderColor: [colors[count]],
+                backgroundColor: [colors[count]],
+                borderWidth: 2
+            })
+            count++
+            <?php
+        }
+    ?>
+
     const ctx_line = document.getElementById('myChart_line').getContext('2d');
     const ctx_bar = document.getElementById('myChart_bar').getContext('2d');
     const myChart_line = new Chart(ctx_line, {
         type: 'line',
         data: {
-            labels: ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'],
-            datasets: [{
-                label: 'Pas du tou satisfait',
-                data: [0, 1],
-                borderColor: [
-                    '#FF6384',
-                ],
-                backgroundColor: [
-                    '#FF6384',
-                ],
-                borderWidth: 2
-            },
-            {
-                label: 'Peu satisfait',
-                data: [0, 3],
-                borderColor: [
-                    '#FFC890',
-                ],
-                backgroundColor: [
-                    '#FFC890',
-                ],
-                borderWidth: 2
-            },
-            {
-                label: 'Satisfait',
-                data: [0, 0],
-                borderColor: [
-                    '#059BFF',
-                ],
-                backgroundColor: [
-                    '#059BFF',
-                ],
-                borderWidth: 2
-            },
-            {
-                label: 'Très satisfait',
-                data: [0, 2],
-                borderColor: [
-                    '#22CFCF',
-                ],
-                backgroundColor: [
-                    '#22CFCF',
-                ],
-                borderWidth: 2
-            }]
+            labels: mounths,
+            datasets: datasets
         },
         options: {
             responsive: true,
@@ -486,39 +469,8 @@
     const myChart_bar = new Chart(ctx_bar, {
         type: 'bar',
         data: {
-            labels: ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'],
-            datasets: [{
-                label: 'Pas du tou satisfait',
-                data: [1],
-                backgroundColor: [
-                    '#FF6384',
-                ],
-                borderWidth: 2
-            },
-            {
-                label: 'Peu satisfait',
-                data: [3],
-                backgroundColor: [
-                    '#FFC890',
-                ],
-                borderWidth: 2
-            },
-            {
-                label: 'Satisfait',
-                data: [0],
-                backgroundColor: [
-                    '#059BFF',
-                ],
-                borderWidth: 2
-            },
-            {
-                label: 'Très satisfait',
-                data: [2],
-                backgroundColor: [
-                    '#22CFCF',
-                ],
-                borderWidth: 2
-            }]
+            labels: mounths,
+            datasets: datasets
         },
         options: {
             responsive: true,

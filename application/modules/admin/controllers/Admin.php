@@ -15,7 +15,28 @@ class Admin extends MX_Controller {
 		// NULL : Variable (type array)
 		$clients = $this->tickets_model->get_all_client();
 		$backups = $this->admin_model->get_count_backups();
-		$content = $this->load->view('admin', array('clients' => $clients, 'backups' => $backups), TRUE);
+		// var_dump($backups);
+		$all_backups = array();
+		foreach($backups as $item ){
+			array_push($all_backups, explode(';', $item->last_value));
+		}
+		$data_chart = array();
+		for($i=0; $i<count($all_backups[0]); $i++) {
+			$temp = array();
+			for($j=0; $j<count($all_backups); $j++) {
+				array_push($temp, $all_backups[$j][$i]);
+			}
+			array_push($data_chart, $temp);
+		}
+		// var_dump($all_backups);
+		// var_dump($data_chart);
+		// var_dump($all_backups[1][0]+$all_backups[1][1]+$all_backups[1][3]);
+		// var_dump(array_sum($all_backups[1]));
+		$content = $this->load->view('admin',
+									array(
+										'clients' => $clients,
+										'data_chart' => $data_chart,
+										'last_value' => $this->admin_model->get_last_value()->last_value), TRUE);
 		$this->display($content);
 	}
 
