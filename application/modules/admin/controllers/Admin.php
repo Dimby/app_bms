@@ -12,12 +12,13 @@ class Admin extends MX_Controller {
 	
 	public function index()
 	{
+		if($this->session->userdata('tickets') == NULL) {
+			$this->session->set_userdata('tickets', array('active_ticket' => "active"));
+		}
 		// NULL : Variable (type array)
 		$clients = $this->tickets_model->get_all_client();
 		$all_tickets_by_clients = $this->admin_model->get_all_tickets_by_clients($this->tickets_model->get_all_client());
-		// var_dump($all_tickets_by_clients);
 		$backups = $this->admin_model->get_count_backups();
-		// var_dump($backups);
 		$all_backups = array();
 		foreach($backups as $item ){
 			array_push($all_backups, explode(';', $item->last_value));
@@ -30,6 +31,8 @@ class Admin extends MX_Controller {
 			}
 			array_push($data_chart, $temp);
 		}
+		// var_dump($all_tickets_by_clients);
+		// var_dump($backups);
 		// var_dump($all_backups);
 		// var_dump($data_chart);
 		// var_dump($all_backups[1][0]+$all_backups[1][1]+$all_backups[1][3]);
@@ -92,7 +95,21 @@ class Admin extends MX_Controller {
 	}
 
 	public function set_session_client() {
-		$this->session->set_userdata('client', array('client' => $this->input->post('client')));
+		$client = $this->input->post('client') != NULL ? $this->input->post('client') : '';
+		$this->session->set_userdata('client', array('client' => $client));
+	}
+
+	public function set_session_tickets() {
+		switch($this->input->post('tab')) {
+			case 'list-ticket':
+				$this->session->set_userdata('tickets', array('active_ticket' => "active"));
+				break;
+			case 'stat':
+				$this->session->set_userdata('tickets', array('active_stat' => "active"));
+				break;
+			default:
+			break;
+		}
 	}
 
 }

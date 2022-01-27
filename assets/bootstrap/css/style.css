@@ -82,3 +82,9 @@ input[type="password"] {
 .item-backup .count {
 	font-size: 50px;
 }
+
+#logout_button {
+	position: absolute;
+	right: 20px;
+	top: 10px;
+}
