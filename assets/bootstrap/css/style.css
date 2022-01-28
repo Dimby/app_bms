@@ -1,6 +1,4 @@
-.d-flex {
-	display: flex;
-}
+
 .justify-content-center {
 	justify-content: center;
 	align-items: center;
@@ -62,7 +60,6 @@ input[type="password"] {
 
 .d-flex {
 	display: flex;
-	justify-content: center;
 }
 
 /* ---------------------------------------------------

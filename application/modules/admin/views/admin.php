@@ -1,5 +1,10 @@
 
 <?php 
+    var_dump($all_tickets_by_clients);
+    // var_dump($clients);
+    var_dump($data_chart);
+    // var_dump($last_value);
+
     $client = $this->session->userdata('client') != NULL ? $this->session->userdata('client')['client'] : '';
     $sess_tickets = $this->session->userdata('tickets') != NULL ? $this->session->userdata('tickets') : '';
     
@@ -28,7 +33,7 @@
   <!-- Tab panes -->
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane <?= $active_ticket ?>" id="home">
-        <div class="row d-flex" style="padding: 10px;">
+        <div class="row d-flex justify-content-center" style="padding: 10px;">
             <div class="col-lg-10">
                 <div class="row">
                     <div class="col-lg-4">
@@ -54,7 +59,7 @@
             <!-- <div class="col-lg-6" style="border: 1px solid red">
             </div> -->
         </div>
-        <div class="row d-flex">
+        <div class="row d-flex justify-content-center">
             <div class="col-lg-10">
                 <table id="tickets_datatable" class="table table-striped table-bordered dataTable no-footer" role="grid" aria-describedby="datatable_info" style="width: 100%">
                     <thead>
@@ -81,11 +86,11 @@
                 <div class="row">
                     <div class="col-lg-2">
                         <h2>Filtre</h2>
-                        <form action="">
+                        <form action="" id="form_filter">
                         <hr>
                             <div class="form-group">
                                 <label for="mounth">Par mois</label>
-                                <select class="form-control chosen-select" multiple id="mounth">
+                                <select class="form-control chosen-select" name="mounth" multiple id="mounth" data-action="mounth">
                                     <option value="0">Janvier</option>
                                     <option value="1">Fevrier</option>
                                     <option value="2">Mars</option>
@@ -101,8 +106,8 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="mounth">Par client</label>
-                                <select class="form-control chosen-select" multiple id="customer">
+                                <label for="customer">Par client</label>
+                                <select class="form-control chosen-select" name="customer" multiple id="customer" data-action="customer">
                                     <?php
                                         foreach($clients as $item) {
                                             ?>
@@ -113,16 +118,16 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="mounth">Par valeur</label>
-                                <select class="form-control chosen-select" multiple id="valeur">
-                                    <option value="">Pas du tout satisfait</option>
-                                    <option value="">Peu satisfait</option>
-                                    <option value="">Plutôt satisfait</option>
-                                    <option value="">Très satisfait</option>
+                                <label for="valeur">Par valeur</label>
+                                <select class="form-control chosen-select" name="valeur" multiple id="valeur" data-action="valeur">
+                                    <option value="0">Pas du tout satisfait</option>
+                                    <option value="1">Peu satisfait</option>
+                                    <option value="2">Plutôt satisfait</option>
+                                    <option value="3">Très satisfait</option>
                                 </select>
                             </div>
-                            
-                            <button class="btn btn-primary">Valider</button>
+
+                            <button class="btn btn-primary" id="valid_filter">Filtrer</button>
                         </form>
                     </div>
                     <div class="col-lg-10">
@@ -138,19 +143,8 @@
                     </div>
                     <div class="col-lg-10 row">
                             <div class="col-lg-6">
-                                <h3>Tickets par clients [ <?= count($clients) ?> client(s) ]</h3>
-                                <div class="d-flex" style="justify-content: start">
-                                    <?php
-                                        foreach($all_tickets_by_clients as $key => $item) {
-                                            ?>
-                                            <div class="item-backup">
-                                                <div class="count" style="color: grey"><?= $backups[0] < 10 ? '0'.$item : $item ?></div>
-                                                <div class="percentage"><?= $key ?></div>
-                                            </div>
-                                            <?php
-                                        }
-                                    ?>
-                                </div>
+                                <h3>Tickets par clients [ <span id="clients_length"></span> client(s) ]</h3>
+                                <div class="d-flex" id="client_section"></div>
                             </div>
                             <div class="col-lg-6">
                                 <h3>Liste [ <?= $sum ?> vote(s) ]</h3>
@@ -310,6 +304,28 @@
 
 <script>
 
+    let clients_list = []
+
+    <?php
+        foreach($all_tickets_by_clients as $c) {
+            ?>
+                clients_list.push({
+                    nom: "<?= $c['nom_client'] ?>",
+                    somme: <?= $c['somme'] ?>,
+                    feedbacks: <?= json_encode($c['feedbacks']) ?>
+                })
+            <?php
+        }
+    ?>
+
+    let get_all_name_clients = () => {
+        let temp = [];
+        clients_list.forEach(item => {
+            temp.push(item.nom)
+        });
+        return temp;
+    }
+
     var config = {
         '.chosen-select'           : {},
         '.chosen-select-deselect'  : { allow_single_deselect: true },
@@ -467,6 +483,60 @@
             success: function() {
             }
         })
+    })
+
+    // $('.chosen-select').change('select', function() {
+    //     switch($(this).data('action')) {
+    //         case 'mounth':
+    //         break;
+    //         case 'customer':
+    //             $(this).val() != null
+    //             ? dynamise_data_for_client($(this).val().length, $(this).val())
+    //             : dynamise_data_for_client(clients_list.length, get_all_name_clients());
+    //         break;
+    //         case 'valeur':
+    //             console.log($(this).val())
+    //         break;
+    //     }
+    // })
+
+    let dynamise_data_for_client = (x) => {
+        $('#clients_length').html(x.length < 10 ? '0'+x.length : x.length);
+        $('#client_section').html('');
+        let temp = clients_list.filter(client => x.includes(client.nom));
+        for (let i = 0; i < temp.length; i++) {
+            let somme = temp[i].somme < 10 ? '0'+temp[i].somme : temp[i].somme
+            $('#client_section').append(`
+                <div class="d-flex" style="justify-content: start">
+                    <div class="item-backup">
+                        <div class="count" style="color: grey" id="`+temp[i].nom+`">`+ somme +`</div>
+                        <div class="percentage">`+temp[i].nom+`</div>
+                    </div>
+                </div>
+            `);
+        }
+    }
+    let dynamise_data_for_valeur = () => {
+
+    }
+    dynamise_data_for_client(get_all_name_clients());
+    dynamise_data_for_valeur();
+
+    $('#valid_filter').on('click', function(e) {
+        e.preventDefault();
+        let temp = $('#form_filter').serializeArray();
+        let tab_mounth_temp = temp.filter(item => (item.name).includes("mounth"));
+        let tab_client_temp = temp.filter(item => (item.name).includes("customer"));
+        let tab_valeur_temp = temp.filter(item => (item.name).includes("valeur"));
+        if(tab_client_temp.length === 0) {
+            dynamise_data_for_client(get_all_name_clients());
+        } else {
+            let val = [];
+            tab_client_temp.forEach(item => {
+                val.push(item.value);
+            });
+            dynamise_data_for_client(val);
+        }
     })
 
     let colors = ['#FF6384', '#FFC890', '#059BFF', '#22CFCF'];

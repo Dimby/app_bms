@@ -57,14 +57,32 @@ class Admin_Model extends CI_Model
 	}
 
 	public function get_all_tickets_by_clients($clients) {
+		$data = array();
 		foreach($clients as $item) {
 			$this->db->where('client_name', $item->nom);
 			$this->db->select('*');
 			$this->db->from($this->feedback);
 			$query = $this->db->get();
-			$temp[$item->nom] = $query->num_rows();
+			$temp = array(
+				'nom_client' => $item->nom,
+				'somme' => $query->num_rows(),
+				'feedbacks' => $this->get_all_feedback_by_client($item->nom)
+			);
+			array_push($data, $temp);
 		}
-		return $temp;
+		return $data;
+	}
+
+	public function get_all_feedback_by_client($client) {
+		$val = array();
+		for($i=0; $i<4; $i++) {
+			$this->db->where('client_name', $client);
+			$this->db->where('valeur', $i);
+			$this->db->select('*');
+			$this->db->from($this->feedback);
+			array_push($val, $this->db->get()->num_rows());
+		}
+		return $val;
 	}
 		
 }

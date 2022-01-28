@@ -31,7 +31,6 @@ class Admin extends MX_Controller {
 			}
 			array_push($data_chart, $temp);
 		}
-		// var_dump($all_tickets_by_clients);
 		// var_dump($backups);
 		// var_dump($all_backups);
 		// var_dump($data_chart);
