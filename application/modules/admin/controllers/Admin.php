@@ -19,6 +19,7 @@ class Admin extends MX_Controller {
 		$clients = $this->tickets_model->get_all_client();
 		$all_tickets_by_clients = $this->admin_model->get_all_tickets_by_clients($this->tickets_model->get_all_client());
 		$backups = $this->admin_model->get_count_backups();
+		$list_valeur = $this->admin_model->get_list_value();
 		$all_backups = array();
 		foreach($backups as $item ){
 			array_push($all_backups, explode(';', $item->last_value));
@@ -41,7 +42,8 @@ class Admin extends MX_Controller {
 										'all_tickets_by_clients' => $all_tickets_by_clients,
 										'clients' => $clients,
 										'data_chart' => $data_chart,
-										'last_value' => $this->admin_model->get_last_value()->last_value), TRUE);
+										'last_value' => $this->admin_model->get_last_value()->last_value, 
+										'list_value' => $list_valeur), TRUE);
 		$this->display($content);
 	}
 

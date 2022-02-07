@@ -7,6 +7,7 @@ class Admin_Model extends CI_Model
 		parent::__construct();
 		$this->feedback = "feedback";
 		$this->cron = "cron";
+		$this->list_valeur = "list_valeur";
 	}
 
 	// Recuperer un seul utilisateur
@@ -75,7 +76,7 @@ class Admin_Model extends CI_Model
 
 	public function get_all_feedback_by_client($client) {
 		$val = array();
-		for($i=0; $i<4; $i++) {
+		for($i=0; $i<count($this->get_list_value()); $i++) {
 			$this->db->where('client_name', $client);
 			$this->db->where('valeur', $i);
 			$this->db->select('*');
@@ -83,6 +84,13 @@ class Admin_Model extends CI_Model
 			array_push($val, $this->db->get()->num_rows());
 		}
 		return $val;
+	}
+
+	public function get_list_value() {
+		$this->db->select('*');
+		$this->db->from($this->list_valeur);
+		$query = $this->db->get();
+		return $query->result();
 	}
 		
 }

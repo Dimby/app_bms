@@ -1,9 +1,10 @@
 
 <?php 
     var_dump($all_tickets_by_clients);
-    // var_dump($clients);
+    var_dump($clients);
     var_dump($data_chart);
-    // var_dump($last_value);
+    var_dump($last_value);
+    var_dump($list_value);
 
     $client = $this->session->userdata('client') != NULL ? $this->session->userdata('client')['client'] : '';
     $sess_tickets = $this->session->userdata('tickets') != NULL ? $this->session->userdata('tickets') : '';
@@ -148,7 +149,7 @@
                             </div>
                             <div class="col-lg-6">
                                 <h3>Liste [ <?= $sum ?> vote(s) ]</h3>
-                                <div class="d-flex" style="justify-content: start">
+                                <div class="d-flex" id="valeur_section" style="justify-content: start">
                                     <div class="item-backup">
                                         <div class="icon">1</div>
                                         <div class="text">Pas du tout satisfait</div>
@@ -304,6 +305,34 @@
 
 <script>
 
+    let colors = [];
+    let labels = []; // Pas du tout satisfait - Peu satisfait - Plutôt satisfait - Très satisfait
+    <?php
+        foreach($list_value as $item) {
+            ?>
+            colors.push("<?= $item->color ?>");
+            labels.push("<?= $item->label ?>")
+            <?php
+        }
+    ?>
+    let mounths = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
+    let datasets = []; // Variable pour les courbes
+    let count = 0;
+    <?php
+        foreach($data_chart as $item) {
+            ?>
+            datasets.push({
+                label: labels[count],
+                data: [<?= implode(", ", $item) ?>],
+                borderColor: [colors[count]],
+                backgroundColor: [colors[count]],
+                borderWidth: 2
+            })
+            count++
+            <?php
+        }
+    ?>
+
     let clients_list = []
 
     <?php
@@ -317,6 +346,8 @@
             <?php
         }
     ?>
+
+    // console.log(clients_list);
 
     let get_all_name_clients = () => {
         let temp = [];
@@ -506,28 +537,59 @@
         let temp = clients_list.filter(client => x.includes(client.nom));
         for (let i = 0; i < temp.length; i++) {
             let somme = temp[i].somme < 10 ? '0'+temp[i].somme : temp[i].somme
+            let arr_temp = temp[i].feedbacks;
+            let str = '';
+            let j = 0;
+            arr_temp.map(item => {
+                str += '<div style="color: '+colors[j]+'">'+labels[j]+' : '+item+'</div>'
+                j++;
+            })
+            // (temp[i].feedbacks).map(item => console.log(item));
             $('#client_section').append(`
                 <div class="d-flex" style="justify-content: start">
                     <div class="item-backup">
                         <div class="count" style="color: grey" id="`+temp[i].nom+`">`+ somme +`</div>
                         <div class="percentage">`+temp[i].nom+`</div>
+                        <div class="list">
+                            `+str+`
+                        </div>
                     </div>
                 </div>
             `);
         }
     }
+
     let dynamise_data_for_valeur = () => {
+        $('#valeur_section').html('');
+        labels.forEach(item => {
+            let k = 0;
+            // let temp = datasets.filter(dataset => )
+            // for (let i = 0; i < m.length; i++) {
+                
+            // }
+            $('#valeur_section').append(`
+                <div class="item-backup">
+                    <div class="icon">`+(k++)+`</div>
+                    <div class="text">`+item+`</div>
+                    <div class="count" style="color: #FF6384"><?= $backups[0] < 10 ? '0'.$backups[0] : $backups[0] ?></div>
+                    <div class="percentage"><?= percentage(array_sum($backups), $backups[0]) ?>%</div>
+                </div>
+            `);
+        });
 
     }
+
     dynamise_data_for_client(get_all_name_clients());
-    dynamise_data_for_valeur();
 
     $('#valid_filter').on('click', function(e) {
         e.preventDefault();
         let temp = $('#form_filter').serializeArray();
+        
         let tab_mounth_temp = temp.filter(item => (item.name).includes("mounth"));
         let tab_client_temp = temp.filter(item => (item.name).includes("customer"));
         let tab_valeur_temp = temp.filter(item => (item.name).includes("valeur"));
+        
+        console.log(tab_valeur_temp)
         if(tab_client_temp.length === 0) {
             dynamise_data_for_client(get_all_name_clients());
         } else {
@@ -538,26 +600,6 @@
             dynamise_data_for_client(val);
         }
     })
-
-    let colors = ['#FF6384', '#FFC890', '#059BFF', '#22CFCF'];
-    let labels = ['Pas du tout satisfait', 'Peu satisfait', 'Plutôt satisfait', 'Très satisfait'];
-    let mounths = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
-    let datasets = [];
-    let count = 0;
-    <?php
-        foreach($data_chart as $item) {
-            ?>
-            datasets.push({
-                label: labels[count],
-                data: [<?= implode(", ", $item) ?>],
-                borderColor: [colors[count]],
-                backgroundColor: [colors[count]],
-                borderWidth: 2
-            })
-            count++
-            <?php
-        }
-    ?>
 
     const ctx_line = document.getElementById('myChart_line').getContext('2d');
     const ctx_bar = document.getElementById('myChart_bar').getContext('2d');
@@ -602,5 +644,124 @@
             }
         }
     });
+
+    let globals = [
+        {
+            nom: "Aveolys",
+            somme: 8,
+            // feedbacks: [[0, 1, 1], [0, 1, 1], [1, 0, 1], [0, 0, 2]]
+            feedbacks: 
+                {
+                    0: [0, 1, 1],
+                    1: [0, 1, 1],
+                    2: [1, 0, 1],
+                    3: [0, 0, 2]
+                }
+        },
+        {
+            nom: "Iris",
+            somme: 10,
+            feedbacks: 
+                {
+                    0: [0, 1, 2], 
+                    1: [1, 0, 1], 
+                    2: [0, 0, 0], 
+                    3: [1, 2, 1]
+                }
+        },
+        {
+            nom: "Newpack",
+            somme: 7,
+            feedbacks: 
+                {
+                    0: [1, 1, 3], 
+                    1: [0, 2, 1], 
+                    2: [0, 1, 0], 
+                    3: [0, 1, 2]
+                }
+        }
+    ]
+
+            // [0, 1]  [0, 1]  ["Aveolys", "Iris"]
+            // valeur : 0 Pas du tout Satisfait, 1 Peu satisfait, ... 
+    let filtre = (mounth, valeur, client) => {
+        let mounth_filtered = [];
+        let valeur_filtered = [];
+        let client_filtered = globals.filter(item => client.includes(item.nom));
+        // Filtrer par client d'abord
+        client_filtered.forEach(item => {
+            mounth_filtered.push(
+                {
+                    nom: item.nom,
+                    somme: sum(filter_mounth(item.feedbacks, mounth.length)),
+                    feedbacks: filter_mounth(item.feedbacks, mounth.length)
+                }
+            );
+        });
+        // Filtrer par mois apres
+        mounth_filtered.forEach(item => {
+            let t = filter_valeur(item.feedbacks, valeur);
+            valeur_filtered.push(
+                {
+                    nom: item.nom,
+                    somme: sum(t),
+                    feedbacks: t
+                }
+            )
+        })
+        return valeur_filtered;
+    }
+
+    let filter_mounth = (feedbacks, n) => {
+        let f = Object.entries(feedbacks);
+        let temp = {}
+        f.forEach(([key, value]) => {
+            temp[key] = _.take(value, n);
+        });
+        return temp;
+    }
+    let sum = (feedbacks) => {
+        let f = Object.entries(feedbacks);
+        let sum = 0;
+        f.forEach(([key, value]) => {
+            sum += value.reduce((a, b) => a + b,0)
+        });
+        return sum;
+    }
+    let filter_valeur = (feedbacks, v) => {
+        let f = Object.entries(feedbacks);
+        let ret = {}
+        f.forEach(([key, value]) => {
+            if(v.includes(parseInt(key, 10))) {
+                ret[key] = value
+            }
+        })
+        return ret;
+    }
+    let last_value = (data) => {
+        let temp = [];
+        data.forEach(element => {
+            temp.push({
+                nom: element.nom,
+                somme: sum(element.feedbacks),
+                last_feedback: reduce_last_value(element.feedbacks)
+            });
+        });
+        return temp;
+    }
+    let reduce_last_value = (feedbacks) => {
+        let f = Object.entries(feedbacks);
+        let temp = [];
+        f.forEach(([key, value]) => {
+            temp.push(value.reduce((a, b) => a + b,0))
+        });
+        return temp;
+    }
+
+    // mois - valeur - client
+    console.log(last_value(filtre([1, 2], [0, 1], ["Iris"])))
+    console.dir(filtre([1, 2], [0, 1], ["Iris"]));
+    // console.log(filter_mounth(globals[2].feedbacks, 2))
+    // console.log(ret);
 
 </script>
