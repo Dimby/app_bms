@@ -74,11 +74,11 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'dsn'	=> 'mysql:host=localhost;dbname=bms',
-	'hostname' => 'localhost',
-	'username' => 'phpmyadmin',
-	'password' => '@veoc0D',
-	'database' => 'bms',
+	'dsn'	=> 'mysql:host=aveolypbmsbdd.mysql.db;dbname=aveolypbmsbdd',
+	'hostname' => 'aveolypbmsbdd.mysql.db',
+	'username' => 'aveolypbmsbdd',
+	'password' => 'Renegade12',
+	'database' => 'aveolypbmsbdd',
 	'dbdriver' => 'pdo',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

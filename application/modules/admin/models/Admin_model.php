@@ -6,6 +6,8 @@ class Admin_Model extends CI_Model
 	{
 		parent::__construct();
 		$this->feedback = "feedback";
+		$this->cron = "cron";
+		$this->list_valeur = "list_valeur";
 	}
 
 	// Recuperer un seul utilisateur
@@ -36,6 +38,59 @@ class Admin_Model extends CI_Model
 		$this->db->from($this->feedback);
 		$query = $this->db->get();
         return $query->result(); // Ligne 1
+	}
+
+	public function get_count_backups() {
+		$this->db->select('*');
+		$this->db->from($this->cron);
+		$this->db->order_by('id_cron', 'ASC');
+		$query = $this->db->get();
+        return $query->result();
+	}
+
+	public function get_last_value() {
+		$this->db->select('last_value');
+		$this->db->from($this->cron);
+		$this->db->order_by('id_cron', 'DESC');
+		$this->db->limit(1);
+		$query = $this->db->get();
+        return $query->row();
+	}
+
+	public function get_all_tickets_by_clients($clients) {
+		$data = array();
+		foreach($clients as $item) {
+			$this->db->where('client_name', $item->nom);
+			$this->db->select('*');
+			$this->db->from($this->feedback);
+			$query = $this->db->get();
+			$temp = array(
+				'nom_client' => $item->nom,
+				'somme' => $query->num_rows(),
+				'feedbacks' => $this->get_all_feedback_by_client($item->nom)
+			);
+			array_push($data, $temp);
+		}
+		return $data;
+	}
+
+	public function get_all_feedback_by_client($client) {
+		$val = array();
+		for($i=0; $i<count($this->get_list_value()); $i++) {
+			$this->db->where('client_name', $client);
+			$this->db->where('valeur', $i);
+			$this->db->select('*');
+			$this->db->from($this->feedback);
+			array_push($val, $this->db->get()->num_rows());
+		}
+		return $val;
+	}
+
+	public function get_list_value() {
+		$this->db->select('*');
+		$this->db->from($this->list_valeur);
+		$query = $this->db->get();
+		return $query->result();
 	}
 		
 }
