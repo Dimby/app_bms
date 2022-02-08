@@ -1,10 +1,10 @@
 
 <?php 
-    var_dump($all_tickets_by_clients);
-    var_dump($clients);
-    var_dump($data_chart);
-    var_dump($last_value);
-    var_dump($list_value);
+    // var_dump($all_tickets_by_clients);
+    // var_dump($clients);
+    // var_dump($data_chart);
+    // var_dump($last_value);
+    // var_dump($list_value);
 
     $client = $this->session->userdata('client') != NULL ? $this->session->userdata('client')['client'] : '';
     $sess_tickets = $this->session->userdata('tickets') != NULL ? $this->session->userdata('tickets') : '';
