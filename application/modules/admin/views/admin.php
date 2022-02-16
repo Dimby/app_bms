@@ -68,10 +68,10 @@
                             <th>ID Tickets</th>
                             <th>Titre</th>
                             <th>Client</th>
-                            <th>Type tickets</th>
                             <th>Type</th>
-                            <th>Sous-type</th>
-                            <th>Valeur</th>
+                            <th>Classification</th>
+                            <th>Subdivision</th>
+                            <th>Evaluation</th>
                             <th>Commentaire</th>
                             <th>Date feedback</th>
                             <th>Actions</th>
