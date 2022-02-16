@@ -584,6 +584,7 @@
     $('#valid_filter').on('click', function(e) {
         e.preventDefault();
         let temp = $('#form_filter').serializeArray();
+        console.log(temp);
         
         let tab_mounth_temp = temp.filter(item => (item.name).includes("mounth"));
         let tab_client_temp = temp.filter(item => (item.name).includes("customer"));
@@ -759,8 +760,8 @@
     }
 
     // mois - valeur - client
-    console.log(last_value(filtre([1, 2], [0, 1], ["Iris"])))
-    console.dir(filtre([1, 2], [0, 1], ["Iris"]));
+    // console.log(last_value(filtre([0, 1], [0, 1], ["Aveolys", "Newpack"])))
+    // console.dir(filtre([0, 1], [0, 1], ["Aveolys", "Newpack"]));
     // console.log(filter_mounth(globals[2].feedbacks, 2))
     // console.log(ret);
 
