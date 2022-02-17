@@ -7,6 +7,8 @@ class Tickets extends MX_Controller {
 		parent::__construct();
 		$this->load->model('tickets_model', 'tickets_model');
 		$this->load->module('security/security');
+		$this->load->module('mail/mail');
+        $this->load->library('email');
 	}
 
 	public function index(){
@@ -15,7 +17,7 @@ class Tickets extends MX_Controller {
 			$this->tickets_model->insert_client($client_name);
 		}
 		$client_flag = $this->tickets_model->get_client_by_name($client_name);
-		$data= array(
+		$data = array(
 			'id_ticket' => isset($_GET["id"]) ? htmlspecialchars($_GET["id"]) : NULL,
 			'ticket_title' => isset($_GET["title"]) ? htmlspecialchars($_GET["title"]) : NULL,
 			'client_name' => isset($_GET["client"]) ? $client_flag->nom : NULL,
@@ -31,12 +33,13 @@ class Tickets extends MX_Controller {
 			$body['content'] = $this->load->view('admin', NULL, TRUE);
 			$this->load->view('index', $body);
 		}
+		
 	}
-
+	
 	private function getValueParameter($url, $params) {
 		$data = explode("&", $url);
 	}
-
+	
 	public function upload($data){
 		$ql = $this->tickets_model->get_ticket($data['id_ticket']);
 		if( $ql ) {
@@ -47,6 +50,7 @@ class Tickets extends MX_Controller {
 			$this->tickets_model->insert_ticket($data);
 			$body['content'] = $this->load->view('tickets', NULL, TRUE);
 			$this->load->view('index', $body);
+			$this->mail->send_mail($data);
 		}		
 	}
 
