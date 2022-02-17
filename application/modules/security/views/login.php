@@ -5,8 +5,8 @@
                 <fieldset>
                 <center><h1>Connexion</h1></center>
                 <div class="form-group">
-                    <label for="user_email">Email</label>
-                    <input type="text" id="user_email" name="user_email" class="form-control" placeholder="Votre email">
+                    <label for="user_email">Nom d'utilisateur</label>
+                    <input type="text" id="user_email" name="user_email" class="form-control" placeholder="Votre nom">
                 </div>
                 <div class="form-group">
                     <label for="user_password">Mot de passe</label>
