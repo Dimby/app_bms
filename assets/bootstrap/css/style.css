@@ -93,3 +93,16 @@ input[type="password"] {
 	right: 20px;
 	top: 10px;
 }
+
+/* -------------------------- */
+.table-filter td {
+	vertical-align: middle !important;
+	text-align: center !important;
+}
+.table-filter td > span {
+	width: fit-content;
+	padding: 0px 5px;
+	border: 2px solid #ffc890;
+	color: #ffc890;
+	margin: 1px;
+}
