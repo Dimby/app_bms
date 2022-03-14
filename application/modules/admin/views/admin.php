@@ -309,7 +309,7 @@
                 data: {client: client},
             },
             "columns": [
-		{"data": 'date_feedback'}
+		{"data": 'date_feedback'},
                 {"data": 'id_ticket'},
                 {"data": 'ticket_title'},
                 {"data": 'client_name'},
