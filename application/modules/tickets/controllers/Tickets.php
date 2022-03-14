@@ -50,7 +50,7 @@ class Tickets extends MX_Controller {
 			$this->tickets_model->insert_ticket($data);
 			$body['content'] = $this->load->view('tickets', NULL, TRUE);
 			$this->load->view('index', $body);
-			$this->mail->send_mail($data);
+		//	$this->mail->send_mail($data);
 		}		
 	}
 

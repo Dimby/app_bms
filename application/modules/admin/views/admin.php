@@ -65,7 +65,8 @@
                 <table id="tickets_datatable" class="table table-striped table-bordered dataTable no-footer" role="grid" aria-describedby="datatable_info" style="width: 100%">
                     <thead>
                         <tr role="row">
-                            <th>ID Tickets</th>
+                            <th>Date feedback</th>
+			   <th>ID Tickets</th>
                             <th>Titre</th>
                             <th>Client</th>
                             <th>Type</th>
@@ -73,7 +74,6 @@
                             <th>Subdivision</th>
                             <th>Evaluation</th>
                             <th>Commentaire</th>
-                            <th>Date feedback</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -401,6 +401,7 @@
                 data: {client: client},
             },
             "columns": [
+		{"data": 'date_feedback'},
                 {"data": 'id_ticket'},
                 {"data": 'ticket_title'},
                 {"data": 'client_name'},
@@ -429,7 +430,6 @@
                     }
                 },
                 {"data": 'commentaire'},
-                {"data": 'date_feedback'},
                 {"data": null,
                     render: function(item) {
                         return action_feedback(item.id_ticket);
@@ -475,7 +475,8 @@
                         }
                     }
                 }
-            ]
+            ],
+	    "order": [[0, "desc"]]
         });
         //!LIST All User
     }
