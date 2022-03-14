@@ -1,7 +1,7 @@
 
 <?php 
     // var_dump($all_tickets_by_clients);
-    var_dump($clients);
+    // var_dump($clients);
     // var_dump($data_chart);
     // var_dump($last_value);
     // var_dump($list_value);
@@ -19,11 +19,6 @@
     }
 
     $clients_json = json_encode((array) $clients);
-
-    // // Somme de tout les tickets
-    // $sum = array_sum(explode(';', $last_value));
-    // // Pour le total
-    // $backups = explode(";", $last_value);
 
 ?>
 
@@ -126,10 +121,9 @@
                             <div class="form-group">
                                 <label for="valeur">Par valeur</label>
                                 <select class="form-control chosen-select" name="valeur" multiple id="valeur" data-action="valeur">
-                                    <option value="0">Pas du tout satisfait</option>
-                                    <option value="1">Peu satisfait</option>
-                                    <option value="2">Plutôt satisfait</option>
-                                    <option value="3">Très satisfait</option>
+                                    <?php foreach ($list_value as $value): ?>
+                                    <option value="<?= $value->label ?>"><?= $value->label ?></option>
+                                    <?php endforeach ?>
                                 </select>
                             </div>
 
@@ -137,9 +131,11 @@
                         </form>
                     </div><br>
                     <div class="col-lg-10">
-                        A
-                    </div>
-                    <div class="col-lg-10 row">
+                        <div class="row">
+                            <h3>Client(s) [<span class="total_client"></span>]</h3>
+                            <div class="filter"></div><br>
+                        </div>
+                        <div class="row">
                             <div class="col-lg-6">
                                 <h3>Courbe</h3>
                                 <canvas id="myChart_line" width="100%"></canvas>
@@ -430,27 +426,31 @@
     })
 
     // SECTION FILTRE -----------------------------------------------------------------------------------------------------------------
+    let with_zero = (n) => {
+        return n < 10 ? ("0"+n) : n;
+    }
 
     let colors = [];
-    let labels = []; // Pas du tout satisfait - Peu satisfait - Plutôt satisfait - Très satisfait
     <?php
         foreach($list_value as $item) {
             ?>
-            colors.push("<?= $item->color ?>");
-            labels.push("<?= $item->label ?>")
+                colors.push("<?= $item->color ?>");
             <?php
         }
     ?>
     let mounths = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
-    let datasets = []; // Variable pour les courbes
-    let count = 0;
-
     let all_tickets = <?= $all_tickets ?>;
     let clients = <?= $clients_json ?>;
     let list_valeur = <?= json_encode((array) $list_value) ?>;
-    console.dir(list_valeur);
-    // console.dir(all_tickets);
-    // console.dir(clients);
+
+    let lv_label = []
+    list_valeur.forEach(lv => {
+        lv_label.push(lv.label);
+    })
+    let c_label = []
+    clients.forEach(c => {
+        c_label.push(c.nom_client);
+    })
 
     let filter_by_client = (tickets, client) => {
         return _.filter(tickets, { client_name: client });
@@ -461,239 +461,156 @@
     let filter_by_date = (tickets, date) => {
         return _.filter(tickets, { date_feedback: date });
     }
-    // console.dir(filter_by_value(filter_by_client(all_tickets, "NewPack"), "0"));
+    const ctx_bar = document.getElementById('myChart_bar').getContext('2d');
+    const ctx_line = document.getElementById('myChart_line').getContext('2d');
+    let myChart_line = new Chart(ctx_bar);
+    let myChart_bar = new Chart(ctx_line);
+    let callchart = (d, l) => {
+        // const myChart_bar = null;
+        myChart_line.destroy();
+        myChart_bar.destroy();
+
+        temp_line = new Chart(ctx_line, {
+            type: 'line',
+            data: {
+                labels: l,
+                datasets: d
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        })
+        myChart_line = temp_line;
+
+        temp_bar = new Chart(ctx_bar, {
+            type: 'bar',
+            data: {
+                labels: l,
+                datasets: d
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        })
+        myChart_bar = temp_bar;
+
+    }
 
         // Evenement Bouton Filtrer
         $('#valid_filter').on('click', function(e) {
             e.preventDefault()
+            let temp_customer = null;
+            let temp_valeur = null;
             let temp = $('#form_filter').serializeArray();
 
-            let temp_customer = (_.filter(temp, { name: "customer" })).length != 0 ? _.map(_.filter(temp, { name: "customer" }), "value") : null;
-            let temp_valeur = (_.filter(temp, { name: "valeur" })).length != 0 ? _.map(_.filter(temp, { name: "valeur" }), "value") : null;
-            
+            temp_customer = (_.filter(temp, { name: "customer" })).length != 0 ? _.map(_.filter(temp, { name: "customer" }), "value") : c_label;
+            temp_valeur = (_.filter(temp, { name: "valeur" })).length != 0 ? _.map(_.filter(temp, { name: "valeur" }), "value") : lv_label;
+            let tickets_filter_c = [];
+            let tickets_filter_v = [];
+
             if(temp_customer && temp_valeur) {
-                let tickets_filter_c = [];
-                let tickets_filter_v = [];
-
+                
                 temp_customer.forEach(c => {
-                    tickets_filter_c.push({ client: c, all_data: filter_by_client(all_tickets, c), filter: [] });
+                    tickets_filter_c = [...tickets_filter_c, ...filter_by_client(all_tickets, c)];
                 });
 
-                tickets_filter_c.forEach(i => {
-                    temp_valeur.forEach(v => {
-                        i.filter.push({ name: v, value: filter_by_value(i.all_data, v) })
-                    })
-                });
-                console.log(tickets_filter_c);
+                temp_valeur.forEach(v => {
+                    let item = null;
+                    switch(v) {
+                        case "Pas du tout satisfait" : item = "0"; break;
+                        case "Peu satisfait" : item = "1"; break;
+                        case "Plutôt satisfait" : item = "2"; break;
+                        case "Très satisfait" : item = "3"; break;
+                        default: break;
+                    }
+                    tickets_filter_v = [...tickets_filter_v, ...filter_by_value(tickets_filter_c, item)]
+                })
             }
-
-            // let data = [
-            //     {
-            //         client: "Newpack",
-            //         all_data: [{ ...data }],
-            //         filter: {
-            //             0: [{ ...data }],
-            //             1: [{ ...data }]
-            //         }
-            //     },
-            //     {
-            //         client: "Groupe Iris",
-            //         all_data: [{ ...data }],
-            //         filter: {
-            //             0: [{ ...data }],
-            //             1: [{ ...data }]
-            //         }
-            //     }
-            // ]
-
-            // Chart
-            // datasets.push({
-            //     label: labels[count],
-            //     data: ,
-            //     borderColor: [colors[count]],
-            //     backgroundColor: [colors[count]],
-            //     borderWidth: 2
-            // })
-
+            retrieve_client(tickets_filter_v, temp_customer, temp_valeur);
         })
 
-        let retrieve_client = (clients) => {
-            let datasets = [];
+        let get_data_client = (tickets, client, _valeur) => {
+            let d = []
+            let c = _.filter(tickets, { client_name: client });
+            list_valeur.forEach(lv => {
+                if(_valeur.indexOf(lv.label) !== -1) {
+                    d.push(_.filter(c, { valeur: lv.flag }).length);
+                } else {
+                    d.push(0);
+                }
+            })
+            return d;
+        }
 
-            clients.forEach(client => {
+        let retrieve_client = (tickets, client, valeur) => {
+            $('.total_client').html(client.length)
+            filter();
+            let datasets = []
+            let count = 0;
+            
+            client.forEach(c => {
+                let data = get_data_client(tickets, c, valeur);
+                sum_all = data.reduce(function(accumulateur, valeurCourante, index, array){
+                    return accumulateur + valeurCourante;
+                });
+                let divs = "";
+                
+                data.forEach(d => {
+                    t = with_zero(d);
+                    divs += `<div>`+ t +`</div>`
+                })
+                $('.filter').append(`
+                    <div class="item">
+                        <div class="title" style="background-color: `+colors[count]+`">`+ c +`</div>
+                        `+divs+`
+                        <div>`+ with_zero(sum_all) +`</div>
+                    </div>
+                `)
                 datasets.push({
-                    label: client.,
-                    data: [0, 1, 2],
+                    label: c,
+                    data: data,
                     borderColor: [colors[count]],
                     backgroundColor: [colors[count]],
                     borderWidth: 2
                 })
+                count++;
             })
+            callchart(datasets, lv_label);
         }
 
-    const ctx_line = document.getElementById('myChart_line').getContext('2d');
-    const ctx_bar = document.getElementById('myChart_bar').getContext('2d');
-    const myChart_line = new Chart(ctx_line, {
-        type: 'line',
-        data: {
-            labels: mounths,
-            datasets: datasets
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                }
-            },
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
+        let filter = () => {
+            $('.filter').html('');
+            $('.filter').append(`
+                <div class="item">
+                    <div>-</div>
+                    <div>Pas du tout satisfait</div>
+                    <div>Peu satisfait</div>
+                    <div>Plutôt satisfait</div>
+                    <div>Très satisfait</div>
+                </div>
+            `)
         }
-    });
 
-    const myChart_bar = new Chart(ctx_bar, {
-        type: 'bar',
-        data: {
-            labels: mounths,
-            datasets: datasets
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                }
-            },
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }
-    });
-
-    // TEST ---------------------------------------------------------------------------------------------------------------
-
-    let globals = [
-        {
-            nom: "Aveolys",
-            somme: 8,
-            // feedbacks: [[0, 1, 1], [0, 1, 1], [1, 0, 1], [0, 0, 2]]
-            feedbacks: 
-                {
-                    0: [0, 1, 1],
-                    1: [0, 1, 1],
-                    2: [1, 0, 1],
-                    3: [0, 0, 2]
-                }
-        },
-        {
-            nom: "Iris",
-            somme: 10,
-            feedbacks: 
-                {
-                    0: [0, 1, 2], 
-                    1: [1, 0, 1], 
-                    2: [0, 0, 0], 
-                    3: [1, 2, 1]
-                }
-        },
-        {
-            nom: "Newpack",
-            somme: 7,
-            feedbacks: 
-                {
-                    0: [1, 1, 3], 
-                    1: [0, 2, 1], 
-                    2: [0, 1, 0], 
-                    3: [0, 1, 2]
-                }
-        }
-    ]
-
-            // [0, 1]  [0, 1]  ["Aveolys", "Iris"]
-            // valeur : 0 Pas du tout Satisfait, 1 Peu satisfait, ... 
-    let filtre = (mounth, valeur, client) => {
-        let mounth_filtered = [];
-        let valeur_filtered = [];
-        let client_filtered = globals.filter(item => client.includes(item.nom));
-        // Filtrer par client d'abord
-        client_filtered.forEach(item => {
-            mounth_filtered.push(
-                {
-                    nom: item.nom,
-                    somme: sum(filter_mounth(item.feedbacks, mounth.length)),
-                    feedbacks: filter_mounth(item.feedbacks, mounth.length)
-                }
-            );
-        });
-        // Filtrer par mois apres
-        mounth_filtered.forEach(item => {
-            let t = filter_valeur(item.feedbacks, valeur);
-            valeur_filtered.push(
-                {
-                    nom: item.nom,
-                    somme: sum(t),
-                    feedbacks: t
-                }
-            )
-        })
-        return valeur_filtered;
-    }
-
-    let filter_mounth = (feedbacks, n) => {
-        let f = Object.entries(feedbacks);
-        let temp = {}
-        f.forEach(([key, value]) => {
-            temp[key] = _.take(value, n);
-        });
-        return temp;
-    }
-    let sum = (feedbacks) => {
-        let f = Object.entries(feedbacks);
-        let sum = 0;
-        f.forEach(([key, value]) => {
-            sum += value.reduce((a, b) => a + b,0)
-        });
-        return sum;
-    }
-    let filter_valeur = (feedbacks, v) => {
-        let f = Object.entries(feedbacks);
-        let ret = {}
-        f.forEach(([key, value]) => {
-            if(v.includes(parseInt(key, 10))) {
-                ret[key] = value
-            }
-        })
-        return ret;
-    }
-    let last_value = (data) => {
-        let temp = [];
-        data.forEach(element => {
-            temp.push({
-                nom: element.nom,
-                somme: sum(element.feedbacks),
-                last_feedback: reduce_last_value(element.feedbacks)
-            });
-        });
-        return temp;
-    }
-    let reduce_last_value = (feedbacks) => {
-        let f = Object.entries(feedbacks);
-        let temp = [];
-        f.forEach(([key, value]) => {
-            temp.push(value.reduce((a, b) => a + b,0))
-        });
-        return temp;
-    }
-
-    // mois - valeur - client
-    // console.log(last_value(filtre([0, 1], [0, 1], ["Aveolys", "Newpack"])))
-    // console.dir(filtre([0, 1], [0, 1], ["Aveolys", "Newpack"]));
-    // console.log(filter_mounth(globals[2].feedbacks, 2))
-    // console.log(ret);
+        retrieve_client(all_tickets, c_label, lv_label);
 
 </script>
