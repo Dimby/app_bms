@@ -8,6 +8,7 @@ class Admin_Model extends CI_Model
 		$this->feedback = "feedback";
 		$this->cron = "cron";
 		$this->list_valeur = "list_valeur";
+		$this->client = "client";
 	}
 
 	// Recuperer un seul utilisateur
@@ -84,6 +85,42 @@ class Admin_Model extends CI_Model
 			array_push($val, $this->db->get()->num_rows());
 		}
 		return $val;
+	}
+
+	public function get_date($test, $year) {
+		switch($test) {
+			case 'max':
+				// $this->db->select_max('date_feedback');
+				$this->db->select('MAX(date_feedback) as date_max, YEAR(date_feedback) as date_year');
+				break;
+			case 'min':
+				// $this->db->select_min('date_feedback');
+				$this->db->select('MIN(date_feedback) as date_min, YEAR(date_feedback) as date_year');
+				break;
+			default:
+				break;
+		}
+		// $this->db->select_min('date_feedback');
+		$this->db->where('YEAR(date_feedback)', $year);
+		$this->db->from($this->feedback);
+		$query = $this->db->get();
+		return $query->row();
+	}
+
+	public function get_data_between($d1, $d2) {
+		$this->db->where('date_feedback >=', $d1);
+		$this->db->where('date_feedback <=', $d2);
+		$this->db->select('*');
+		$this->db->from($this->feedback);
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	public function get_name_clients() {
+		$this->db->select('nom as nom_client');
+		$this->db->from($this->client);
+		$query = $this->db->get();
+		return $query->result();
 	}
 
 	public function get_list_value() {

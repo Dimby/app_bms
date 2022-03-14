@@ -1,3 +1,6 @@
+.border {
+	border: 1px solid #dee2e6 !important;
+}
 .justify-content-center {
 	justify-content: center;
 	align-items: center;
@@ -92,4 +95,45 @@ input[type="password"] {
 	position: absolute;
 	right: 20px;
 	top: 10px;
+}
+
+/* -------------------------- */
+.table-filter td {
+	vertical-align: middle !important;
+	text-align: center !important;
+}
+.table-filter td > span {
+	width: fit-content;
+	padding: 0px 5px;
+	border: 2px solid #ffc890;
+	color: #ffc890;
+	margin: 1px;
+}
+.filter {
+	display: flex;
+	/* justify-content: center; */
+}
+.filter .item {
+	width: 200px;
+	max-width: 200px;
+}
+.filter .item > div {
+	border: 1px solid #dee2e6 !important;
+	margin: 5px 0px 5px 5px;
+	padding: 5px 10px;
+}
+.filter .item .title {
+	text-transform: uppercase;
+}
+.filter .item .v1-color {
+	background-color: #ffebeb;
+}
+.filter .item .v2-color {
+	background-color: #fff9e6;
+}
+.filter .item .v3-color {
+	background-color: #ebfeff;
+}
+.filter .item .v4-color {
+	background-color: #e4ffe4;
 }

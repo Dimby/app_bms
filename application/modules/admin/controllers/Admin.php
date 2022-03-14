@@ -16,34 +16,40 @@ class Admin extends MX_Controller {
 			$this->session->set_userdata('tickets', array('active_ticket' => "active"));
 		}
 		// NULL : Variable (type array)
-		$clients = $this->tickets_model->get_all_client();
+		$clients = $this->admin_model->get_name_clients();
 		$all_tickets_by_clients = $this->admin_model->get_all_tickets_by_clients($this->tickets_model->get_all_client());
-		$backups = $this->admin_model->get_count_backups();
+
+		// $backups = $this->admin_model->get_count_backups();
 		$list_valeur = $this->admin_model->get_list_value();
-		$all_backups = array();
-		foreach($backups as $item ){
-			array_push($all_backups, explode(';', $item->last_value));
-		}
-		$data_chart = array();
-		for($i=0; $i<count($all_backups[0]); $i++) {
-			$temp = array();
-			for($j=0; $j<count($all_backups); $j++) {
-				array_push($temp, $all_backups[$j][$i]);
-			}
-			array_push($data_chart, $temp);
-		}
+		// $all_backups = array();
+		// foreach($backups as $item ){
+		// 	array_push($all_backups, explode(';', $item->last_value));
+		// }
+		// $data_chart = array();
+		// for($i=0; $i<count($all_backups[0]); $i++) {
+		// 	$temp = array();
+		// 	for($j=0; $j<count($all_backups); $j++) {
+		// 		array_push($temp, $all_backups[$j][$i]);
+		// 	}
+		// 	array_push($data_chart, $temp);
+		// }
+
+		$all_tickets = $this->admin_model->get_data_between($this->admin_model->get_date('min', '2022')->date_min, $this->admin_model->get_date('max', '2022')->date_max);
 		// var_dump($backups);
 		// var_dump($all_backups);
 		// var_dump($data_chart);
 		// var_dump($all_backups[1][0]+$all_backups[1][1]+$all_backups[1][3]);
 		// var_dump(array_sum($all_backups[1]));
+		$year = date('Y');
 		$content = $this->load->view('admin',
 									array(
 										'all_tickets_by_clients' => $all_tickets_by_clients,
 										'clients' => $clients,
-										'data_chart' => $data_chart,
-										'last_value' => $this->admin_model->get_last_value()->last_value, 
-										'list_value' => $list_valeur), TRUE);
+										// 'last_value' => $this->admin_model->get_last_value()->last_value, 
+										'list_value' => $list_valeur,
+										'max_date' => $this->admin_model->get_date('max', $year),
+										'min_date' => $this->admin_model->get_date('min', $year),
+										'all_tickets' => json_encode((array)$all_tickets)), TRUE);
 		$this->display($content);
 	}
 
