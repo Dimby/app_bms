@@ -132,17 +132,19 @@
                     </div><br>
                     <div class="col-lg-10">
                         <div class="row">
-                            <h3>Client(s) [<span class="total_client"></span>]</h3>
-                            <div class="filter"></div><br>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <h3>Courbe</h3>
-                                <canvas id="myChart_line" width="100%"></canvas>
-                            </div>
                             <div class="col-lg-6">
                                 <h3>Bâton</h3>
                                 <canvas id="myChart_bar" width="100%"></canvas>
+                            </div>
+                            <div class="col-lg-6">
+                                <h3>Client(s) [<span class="total_client"></span>]</h3>
+                                <div class="filter"></div><br>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h3>Année 2022</h3>
+                                <canvas id="myChart_line_mounth" height="70%"></canvas>
                             </div>
                         </div>
                     </div>
@@ -461,61 +463,88 @@
     let filter_by_date = (tickets, date) => {
         return _.filter(tickets, { date_feedback: date });
     }
-    const ctx_bar = document.getElementById('myChart_bar').getContext('2d');
-    const ctx_line = document.getElementById('myChart_line').getContext('2d');
-    let myChart_line = new Chart(ctx_bar);
-    let myChart_bar = new Chart(ctx_line);
-    let callchart = (d, l) => {
-        // const myChart_bar = null;
-        myChart_line.destroy();
-        myChart_bar.destroy();
-
-        temp_line = new Chart(ctx_line, {
-            type: 'line',
-            data: {
-                labels: l,
-                datasets: d
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
+    let percentage = (n, total) => {
+        return ((n*100)/total).toFixed(2)
+    }
+    let sum_all_index = (arr) => {
+        return arr.reduce(function(accumulateur, valeurCourante, index, array){
+            return accumulateur + valeurCourante;
+        });
+    }
+    let set_total_data = (datasets) => {
+        let d = []
+        mounths.forEach((i, key) => {
+            let sum_temp = 0;
+            datasets.forEach(ds => {
+                sum_temp += ds.data[key];
+            })
+            d.push(sum_temp);
         })
-        myChart_line = temp_line;
-
-        temp_bar = new Chart(ctx_bar, {
-            type: 'bar',
-            data: {
-                labels: l,
-                datasets: d
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
-        })
-        myChart_bar = temp_bar;
-
+        return d;
     }
 
+    const ctx_bar = document.getElementById('myChart_bar').getContext('2d');
+    // const ctx_line = document.getElementById('myChart_line').getContext('2d');
+    const ctx_line_mounth = document.getElementById('myChart_line_mounth').getContext('2d');
+    // let myChart_line = new Chart(ctx_bar);
+    let myChart_line_mounth = new Chart(ctx_line_mounth);
+    let myChart_bar = new Chart(ctx_bar);
+
+    let config_chart = (type, labels, datasets) => {
+        return {
+            type: type,
+            data: {
+                labels: labels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                if(datasets.total == undefined) {
+                                    let sum = sum_all_index(context.dataset.data);
+                                    return context.dataset.label+ " : " +context.dataset.data[context.dataIndex]+ " ("+percentage(context.dataset.data[context.dataIndex], sum)+" %)";
+                                } else {
+                                    return context.dataset.label+ " : " +context.dataset.data[context.dataIndex]+ " sur "+ datasets.total[context.dataIndex] +" ("+percentage(context.dataset.data[context.dataIndex], datasets.total[context.dataIndex])+" %)";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    let callchart = (d, l) => {
+        // const myChart_bar = null;
+        // myChart_line.destroy();
+        myChart_bar.destroy();
+        
+        // temp_line = new Chart(ctx_line, config_chart('line', l, d))
+        // myChart_line = temp_line;
+        
+        temp_bar = new Chart(ctx_bar, config_chart('bar', l, d));
+        myChart_bar = temp_bar;
+        
+        
+    }
+    
+    let callchart_month = (d) => {
+        myChart_line_mounth.destroy();
+        temp_line_mounth = new Chart(ctx_line_mounth, config_chart('line', mounths, d));
+        myChart_line_mounth = temp_line_mounth;
+    }
+    
         // Evenement Bouton Filtrer
         $('#valid_filter').on('click', function(e) {
             e.preventDefault()
@@ -546,12 +575,19 @@
                     tickets_filter_v = [...tickets_filter_v, ...filter_by_value(tickets_filter_c, item)]
                 })
             }
+            retrieve_valeur(tickets_filter_v);
             retrieve_client(tickets_filter_v, temp_customer, temp_valeur);
         })
 
+        let get_data_valeur = (tickets, valeur) => {
+            if(tickets.length == 0) return null;
+            let v = filter_by_value(tickets, valeur);
+            return v.length;
+        }
+
         let get_data_client = (tickets, client, _valeur) => {
             let d = []
-            let c = _.filter(tickets, { client_name: client });
+            let c = filter_by_client(tickets, client);
             list_valeur.forEach(lv => {
                 if(_valeur.indexOf(lv.label) !== -1) {
                     d.push(_.filter(c, { valeur: lv.flag }).length);
@@ -562,6 +598,33 @@
             return d;
         }
 
+        let getMonth = (date) => {
+            return new Date(date).getMonth();
+        }
+        let retrieve_valeur = (tickets) => {
+            let datasets = [];
+            let count = 0;
+            lv_label.forEach(lv => {
+                datasets.push({
+                    label: lv,
+                    borderColor: [colors[count]],
+                    backgroundColor: [colors[count]],
+                    borderWidth: 2,
+                })
+                count++;
+            })
+            datasets.forEach((d, key_d) => {
+                let data = []
+                
+                mounths.forEach((i, key_m) => {
+                    data.push(get_data_valeur(_.filter(tickets, o => getMonth(o.date_feedback) == key_m ), key_d+""));
+                })
+                datasets[key_d].data = data
+            })
+            datasets.total = set_total_data(datasets);
+            callchart_month(datasets);
+        }
+
         let retrieve_client = (tickets, client, valeur) => {
             $('.total_client').html(client.length)
             filter();
@@ -570,9 +633,7 @@
             
             client.forEach(c => {
                 let data = get_data_client(tickets, c, valeur);
-                sum_all = data.reduce(function(accumulateur, valeurCourante, index, array){
-                    return accumulateur + valeurCourante;
-                });
+                sum_all = sum_all_index(data);
                 let divs = "";
                 
                 data.forEach(d => {
@@ -611,6 +672,7 @@
             `)
         }
 
+        retrieve_valeur(all_tickets);
         retrieve_client(all_tickets, c_label, lv_label);
 
 </script>
