@@ -425,7 +425,7 @@
 
         $('.table_filter .table tbody').append(`
             <tr class="totals">
-                <th scope="row">Totals</th>
+                <th scope="row" style="color: #4dbdc3">Total :</th>
             </tr>
         `)
         data.map(d => {
