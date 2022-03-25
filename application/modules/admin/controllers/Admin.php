@@ -8,10 +8,13 @@ class Admin extends MX_Controller {
 		$this->load->model('Admin_model', 'admin_model');
 		$this->load->module('security/security');
 		$this->load->model('tickets/Tickets_model', 'tickets_model');
+		$this->year = date('Y');
 	}
 	
 	public function index()
 	{
+		$year_sess = $this->session->userdata('year');
+		$y = $year_sess != NULL ? $year_sess['date'] : $this->year;
 		if($this->session->userdata('tickets') == NULL) {
 			$this->session->set_userdata('tickets', array('active_ticket' => "active"));
 		}
@@ -19,36 +22,24 @@ class Admin extends MX_Controller {
 		$clients = $this->admin_model->get_name_clients();
 		$all_tickets_by_clients = $this->admin_model->get_all_tickets_by_clients($this->tickets_model->get_all_client());
 
-		// $backups = $this->admin_model->get_count_backups();
 		$list_valeur = $this->admin_model->get_list_value();
-		// $all_backups = array();
-		// foreach($backups as $item ){
-		// 	array_push($all_backups, explode(';', $item->last_value));
-		// }
-		// $data_chart = array();
-		// for($i=0; $i<count($all_backups[0]); $i++) {
-		// 	$temp = array();
-		// 	for($j=0; $j<count($all_backups); $j++) {
-		// 		array_push($temp, $all_backups[$j][$i]);
-		// 	}
-		// 	array_push($data_chart, $temp);
-		// }
-
-		$all_tickets = $this->admin_model->get_data_between($this->admin_model->get_date('min', '2022')->date_min, $this->admin_model->get_date('max', '2022')->date_max);
-		// var_dump($backups);
-		// var_dump($all_backups);
-		// var_dump($data_chart);
-		// var_dump($all_backups[1][0]+$all_backups[1][1]+$all_backups[1][3]);
-		// var_dump(array_sum($all_backups[1]));
-		$year = date('Y');
+		$all_tickets = $this->admin_model->get_data_between($this->admin_model->get_date('min', strval($y))->date_min, $this->admin_model->get_date('max', strval($y))->date_max);
+		
 		$content = $this->load->view('admin',
 									array(
+										'list_tickets' => $this->load->view('navs/list_tickets', array(
+											'clients' => $clients
+										), TRUE),
+										'statistiques' => $this->load->view('navs/statistiques', array(
+											'year' => $y,
+											'clients' => $clients,
+											'list_value' => $list_valeur,
+											'all_tickets' => json_encode((array)$all_tickets)
+										), TRUE),
 										'all_tickets_by_clients' => $all_tickets_by_clients,
-										'clients' => $clients,
-										// 'last_value' => $this->admin_model->get_last_value()->last_value, 
-										'list_value' => $list_valeur,
-										'max_date' => $this->admin_model->get_date('max', $year),
-										'min_date' => $this->admin_model->get_date('min', $year),
+										
+										'max_date' => $this->admin_model->get_date('max', $y),
+										'min_date' => $this->admin_model->get_date('min', $y),
 										'all_tickets' => json_encode((array)$all_tickets)), TRUE);
 		$this->display($content);
 	}
@@ -91,6 +82,10 @@ class Admin extends MX_Controller {
 	public function delete_ticket() {
 		// var_dump($this->input->post('id_ticket'));
 		$this->admin_model->delete_ticket($this->input->post('id_ticket'));
+	}
+
+	public function change_year() {
+		$this->session->set_userdata('year', array('date' => $this->input->post('year')));
 	}
 
 	public function _remap($method) {
