@@ -5017,8 +5017,10 @@ a.label:focus {
 .badge {
 	display: inline-block;
 	min-width: 10px;
-	padding: 3px 7px;
-	font-size: 12px;
+	width: 50px;
+	height: 30px;
+	padding: 6px 7px;
+	font-size: 17px;
 	font-weight: bold;
 	line-height: 1;
 	color: #fff;
@@ -5026,7 +5028,7 @@ a.label:focus {
 	white-space: nowrap;
 	vertical-align: middle;
 	background-color: #777;
-	border-radius: 10px;
+	margin-right: 5px;
 }
 .badge:empty {
 	display: none;

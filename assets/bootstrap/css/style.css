@@ -125,15 +125,76 @@ input[type="password"] {
 .filter .item .title {
 	text-transform: uppercase;
 }
-.filter .item .v1-color {
-	background-color: #ffebeb;
+.v1-color {
+	border: 1px solid #ff6384;
+	background-color: #fff;
+	color: #ff6384;
 }
-.filter .item .v2-color {
-	background-color: #fff9e6;
+.v2-color {
+	border: 1px solid #ffc890;
+	background-color: #fff;
+	color: #ffc890;
 }
-.filter .item .v3-color {
-	background-color: #ebfeff;
+.v3-color {
+	border: 1px solid #059bff;
+	background-color: #fff;
+	color: #059bff;
 }
-.filter .item .v4-color {
-	background-color: #e4ffe4;
+.v4-color {
+	border: 1px solid #22cfcf;
+	background-color: #fff;
+	color: #22cfcf;
+}
+
+.wheel-years {
+	display: flex;
+	justify-content: center;
+}
+.wheel-years .item {
+	border: 1px solid gray;
+	padding: 5px 20px;
+	margin: 0 20px;
+	cursor: pointer;
+	border-radius: 5px;
+}
+.wheel-years .item.active {
+	background-color: #059bff;
+	color: #ffffff;
+}
+.wheel-years .item-next {
+	width: 34px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+.wheel-years .item-next:hover {
+	background-color: #dee2e6;
+}
+.wheel-years .item-next span {
+	font-size: 13px;
+	top: 0;
+}
+.wheel-years .item-next.disabled-event {
+	pointer-events: none;
+	opacity: 0.4;
+}
+.wheel-years .item-now {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0 13px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+.wheel-years .item-now:hover {
+	background-color: #dee2e6;
+}
+.filter_button {
+	z-index: 1;
+	position: absolute;
+	display: flex;
+	right: 70px;
+	top: 70px;
 }

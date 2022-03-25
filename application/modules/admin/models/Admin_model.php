@@ -98,7 +98,7 @@ class Admin_Model extends CI_Model
 				$this->db->select('MIN(date_feedback) as date_min, YEAR(date_feedback) as date_year');
 				break;
 			default:
-				break;
+			break;
 		}
 		// $this->db->select_min('date_feedback');
 		$this->db->where('YEAR(date_feedback)', $year);
@@ -108,6 +108,7 @@ class Admin_Model extends CI_Model
 	}
 
 	public function get_data_between($d1, $d2) {
+		if($d1 == NULL && $d2 == NULL) return NULL;
 		$this->db->where('date_feedback >=', $d1);
 		$this->db->where('date_feedback <=', $d2);
 		$this->db->select('*');
