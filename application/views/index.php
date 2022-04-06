@@ -30,24 +30,25 @@
     <!-- Lodash -->
     <script src='https://cdn.jsdelivr.net/g/0.500X/bc1qjk0nn9ayhyv36vgww9u5rl0e6fdccttt6guraw/lodash@4(lodash.min.js+lodash.fp.min.js)'></script>
 
-    <style>
-        footer {
-            position: absolute;
-            bottom: 3rem;
-            width: 100%;
-        }
-    </style>
 </head>
 <body>
-    <?= $content; ?> 
-    <footer>
-        <div class="row d-flex justify-content-center">
-            <div class="col-lg-4">
-                <a href="https://www.aveolys.com" target="blank">
-                    <img src="<?= base_url()."assets/images/logo-aveolys.png" ?>" alt="">
-                </a>
-            </div>
+    <div class="row">
+        <div>
+            <?= $content; ?> 
         </div>
-    </footer>
+    </div>
+    <div class="row">
+        <div>
+            <footer>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-4">
+                        <a href="https://www.aveolys.com" target="blank">
+                            <img src="<?= base_url()."assets/images/logo-aveolys.png" ?>" alt="">
+                        </a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
 </body>
 </html>
