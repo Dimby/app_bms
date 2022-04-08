@@ -120,7 +120,7 @@
             method: "POST",
             data: data,
             success: function() {
-                location.reload();
+                // location.reload();
             }
         });
     }
@@ -151,6 +151,7 @@
     ?>
     let months = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
     let all_tickets = <?= $all_tickets ?>;
+    console.dir(all_tickets);
     let clients = <?= $clients_json ?>;
     let list_valeur = <?= json_encode((array) $list_value) ?>;
 
