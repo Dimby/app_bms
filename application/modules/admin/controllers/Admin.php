@@ -23,8 +23,8 @@ class Admin extends MX_Controller {
 		$all_tickets_by_clients = $this->admin_model->get_all_tickets_by_clients($this->tickets_model->get_all_client());
 
 		$list_valeur = $this->admin_model->get_list_value();
-		// $all_tickets = $this->admin_model->get_data_between($this->admin_model->get_date('min', strval($y))->date_min, $this->admin_model->get_date('max', strval($y))->date_max);
-		$all_tickets = $this->admin_model->get_all_tickets();
+		$all_tickets = $this->admin_model->get_data_between($this->admin_model->get_date('min', strval($y))->date_min, $this->admin_model->get_date('max', strval($y))->date_max);
+		// $all_tickets = $this->admin_model->get_all_tickets();
 		
 		$content = $this->load->view('admin',
 									array(

@@ -13,15 +13,21 @@
         <div class="wheel-years">
         </div>
     </div>
-    <div class="col-lg-12">
+</div>      
+<div class="row chart_month">
+    <div><span class="glyphicon glyphicon-chevron-left item-prev"></span></div>
+    <div class="col-lg-11">
         <canvas id="myChart_line_mounth" height="70%"></canvas>
     </div>
+    <div><span class="glyphicon glyphicon-chevron-right item-next"></span></div>
 </div>
 <hr>
-<div class="row">
-    <div class="col-lg-12 table_filter"></div>
-    <div class="col-lg-12"><hr></div>
-    <div class="col-lg-12 text-center">
+<div class="row chart_month">
+    <div class="col-lg-11 table_filter"></div>
+</div>
+<hr>
+<div class="row chart_month">
+    <div class="col-lg-11 text-center">
         <span class="badge v1-color">-</span> : Pas du tout satisfait &nbsp;
         <span class="badge v2-color">-</span> : Peu satisfait &nbsp;
         <span class="badge v3-color">-</span> : Plutôt satisfait &nbsp;
@@ -33,7 +39,7 @@
 <div>
     <div>
         <div class="row">
-            </div><br>
+            <br>
             <div class="col-lg-12">
                 <div class="row">
                     <div class="col-lg-6">
@@ -120,7 +126,7 @@
             method: "POST",
             data: data,
             success: function() {
-                // location.reload();
+                location.reload();
             }
         });
     }
@@ -151,7 +157,6 @@
     ?>
     let months = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
     let all_tickets = <?= $all_tickets ?>;
-    console.dir(all_tickets);
     let clients = <?= $clients_json ?>;
     let list_valeur = <?= json_encode((array) $list_value) ?>;
 
@@ -463,6 +468,34 @@
     $('.wheel-years .item').on('click', function(e) {
         e.preventDefault()
         ajax_func("<?= site_url('admin/change_year') ?>", [{name: 'year', value: $(this).data('value')}])
+    })
+
+    let months_temp = months;
+
+    $('.wheel-months .item-next').on('click', function(e) {
+        console.log(parseInt(year, 10)+1)
+        console.dir(months_temp)
+        let temp = months_temp[0];
+        months_temp.push(temp);
+        console.dir(months_temp.shift());
+
+        $('.wheel-months .first').html(months[0]+" "+year);
+        if(months[months.length-1] == 'Janvier') {
+            $('.wheel-months .last').html(months[months.length-1]+" "+parseInt(year, 10)+1);
+        } else $('.wheel-months .last').html(months[months.length-1]+" "+year);
+    })
+
+    $('.wheel-months .item-prev').on('click', function(e) {
+        console.log(year)
+        console.dir(months_temp)
+        let temp = months_temp[months_temp.length-1];
+        months_temp.unshift(temp);
+        console.dir(months_temp.pop());
+
+        $('.wheel-months .first').html(months[0]+" "+year);
+        if(months[0] == 'Décembre') {
+            $('.wheel-months .last').html(months[months.length-1]+" "+parseInt(year, 10)-1);
+        } else $('.wheel-months .last').html(months[months.length-1]+" "+year);
     })
 
 </script>

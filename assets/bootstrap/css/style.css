@@ -162,8 +162,20 @@ input[type="password"] {
 	align-items: center;
 	cursor: pointer;
 }
+.chart_month .item-next,
+.chart_month .item-prev {
+	position: relative;
+	padding: 10;
+	border-radius: 50%;
+	margin: 0 10px;
+	cursor: pointer;
+}
+.chart_month .item-next:hover,
+.chart_month .item-prev:hover {
+	background-color: #eaeef1;
+}
 .wheel-years .item-next:hover {
-	background-color: #dee2e6;
+	background-color: #eaeef1;
 }
 .wheel-years .item-next span {
 	font-size: 13px;
@@ -190,4 +202,9 @@ input[type="password"] {
 	display: flex;
 	right: 70px;
 	top: 70px;
+}
+.chart_month {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
